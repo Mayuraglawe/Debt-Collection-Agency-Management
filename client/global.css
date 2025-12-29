@@ -1,0 +1,127 @@
+/** @import must precede all other statements */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /**
+   * Tailwind CSS theme - Human-Touch DCA Color Palette
+   * tailwind.config.ts expects the following color variables to be expressed as HSL values.
+   * A different format will require also updating the theme in tailwind.config.ts.
+  */
+  :root {
+    /* Off-Neutrals: Paper White background and Charcoal Navy depth */
+    --background: 206 28% 97.6%;
+    --foreground: 213 18% 14.1%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 213 18% 14.1%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 213 18% 14.1%;
+
+    /* Primary: Dusty Blue - Authoritative but not harsh */
+    --primary: 204 56% 35.1%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary: Charcoal Navy - Solid foundation */
+    --secondary: 213 18% 14.1%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Muted: Soft grey for subtle elements */
+    --muted: 213 17% 43.1%;
+    --muted-foreground: 213 17% 43.1%;
+
+    /* Accent: Soft Purple - Innovation without neon */
+    --accent: 264 76% 60.8%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Status Colors - Dull/Professional versions for DCA */
+    --success: 160 51% 37.6%;
+    --warning: 40 82% 42.7%;
+    --destructive: 0 70% 42.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Body text: Slate Grey for readability */
+    --text-body: 215 17% 43.1%;
+
+    /* Subtle borders and inputs */
+    --border: 213 17% 88.2%;
+    --input: 213 17% 88.2%;
+    --ring: 204 56% 35.1%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 206 28% 97.6%;
+    --sidebar-foreground: 213 18% 14.1%;
+    --sidebar-primary: 204 56% 35.1%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 213 17% 88.2%;
+    --sidebar-accent-foreground: 213 18% 14.1%;
+    --sidebar-border: 213 17% 88.2%;
+    --sidebar-ring: 204 56% 35.1%;
+  }
+
+  .dark {
+    /* Dark mode adjustments */
+    --background: 213 18% 14.1%;
+    --foreground: 0 0% 100%;
+
+    --card: 213 18% 20%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 213 18% 20%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 204 56% 65%;
+    --primary-foreground: 213 18% 14.1%;
+
+    --secondary: 0 0% 100%;
+    --secondary-foreground: 213 18% 14.1%;
+
+    --muted: 213 18% 40%;
+    --muted-foreground: 213 17% 70%;
+
+    --accent: 264 76% 60.8%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 213 18% 30%;
+    --input: 213 18% 30%;
+    --ring: 204 56% 65%;
+
+    --sidebar-background: 213 18% 14.1%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 204 56% 65%;
+    --sidebar-primary-foreground: 213 18% 14.1%;
+    --sidebar-accent: 213 18% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 213 18% 25%;
+    --sidebar-ring: 204 56% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  :where(p, span, li, h1, h2, h3, h4, h5, h6, a, button, label, td, th) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  pre,
+  code {
+    overflow-x: auto;
+    white-space: pre;
+  }
+}
