@@ -47,6 +47,8 @@ __pycache__/
 .Python
 venv/
 .venv/
+env/
+.env/
 *.egg-info/
 .eggs/
 *.egg
@@ -55,6 +57,7 @@ venv/
 ml-service/models/*.pkl
 ml-service/models/*.joblib
 ml-service/data/*.csv
+ml_service/data/
 dataset/
 
 # Misc
