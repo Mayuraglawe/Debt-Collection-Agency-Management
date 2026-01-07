@@ -22,6 +22,8 @@ ENV/
 
 # Data
 *.csv
+*.xlsx
+*.xls
 *.parquet
 *.json
 !data/.gitkeep
