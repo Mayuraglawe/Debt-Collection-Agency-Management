@@ -28,3 +28,13 @@ dist-ssr
 
 # Datasets
 dataset/
+ml_service/data/
+
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+
