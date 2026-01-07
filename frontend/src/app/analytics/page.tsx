@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
     TrendingUp,
@@ -13,6 +13,7 @@ import {
     Activity,
     RefreshCw,
     Loader2,
+    AlertCircle,
 } from "lucide-react";
 import {
     AreaChart,
@@ -32,55 +33,91 @@ import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/utils";
 import { useTheme } from "@/lib/theme-context";
-
-const recoveryData = [
-    { month: "Jan", recovered: 42, target: 50 },
-    { month: "Feb", recovered: 48, target: 52 },
-    { month: "Mar", recovered: 51, target: 55 },
-    { month: "Apr", recovered: 47, target: 53 },
-    { month: "May", recovered: 55, target: 58 },
-    { month: "Jun", recovered: 62, target: 60 },
-    { month: "Jul", recovered: 58, target: 62 },
-    { month: "Aug", recovered: 65, target: 65 },
-    { month: "Sep", recovered: 71, target: 68 },
-    { month: "Oct", recovered: 68, target: 70 },
-    { month: "Nov", recovered: 75, target: 72 },
-    { month: "Dec", recovered: 82, target: 75 },
-];
-
-const agentPerformanceData = [
-    { name: "Predictive", tasks: 1247 },
-    { name: "Negotiation", tasks: 856 },
-    { name: "Compliance", tasks: 2103 },
-    { name: "RPA", tasks: 3421 },
-];
-
-const caseStatusData = [
-    { name: "Settled", value: 423, color: "#22c55e" },
-    { name: "In Progress", value: 312, color: "#f59e0b" },
-    { name: "Open", value: 245, color: "#3b82f6" },
-    { name: "Escalated", value: 67, color: "#ef4444" },
-    { name: "Closed", value: 89, color: "#64748b" },
-];
-
-const collectionByChannel = [
-    { channel: "Email", amount: 32500000, count: 456 },
-    { channel: "SMS", amount: 18200000, count: 324 },
-    { channel: "Call", amount: 24800000, count: 189 },
-    { channel: "Letter", amount: 7000000, count: 67 },
-];
-
-const kpiCards = [
-    { title: "Total Recovered", value: 82500000, change: 12.5, format: "currency", icon: DollarSign, color: "#22c55e" },
-    { title: "Recovery Rate", value: 68.5, change: 5.2, format: "percentage", icon: Target, color: "#3b82f6" },
-    { title: "Active Debtors", value: 1847, change: -8.3, format: "number", icon: Users, color: "#a855f7" },
-    { title: "Avg Collection Time", value: 23, change: -15.4, format: "days", icon: Activity, color: "#f59e0b" },
-];
+import { api } from "@/lib/supabase";
 
 export default function AnalyticsPage() {
     const { theme } = useTheme();
     const [timeRange, setTimeRange] = useState("12m");
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [kpiCards, setKpiCards] = useState<any[]>([]);
+    const [recoveryData, setRecoveryData] = useState<any[]>([]);
+    const [caseStatusData, setCaseStatusData] = useState<any[]>([]);
+    const [agentPerformanceData, setAgentPerformanceData] = useState<any[]>([]);
+    const [collectionByChannel, setCollectionByChannel] = useState<any[]>([]);
+
+    const fetchAnalyticsData = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            // Fetch dashboard KPIs
+            const dashboardData = await api.get<any>('/analytics/dashboard');
+
+            // Map to KPI cards
+            const kpis = [
+                { title: "Total Recovered", value: dashboardData?.total_recovered || 0, change: 12.5, format: "currency", icon: DollarSign, color: "#22c55e" },
+                { title: "Recovery Rate", value: dashboardData?.recovery_rate || 0, change: 5.2, format: "percentage", icon: Target, color: "#3b82f6" },
+                { title: "Active Cases", value: dashboardData?.active_cases || 0, change: -8.3, format: "number", icon: Users, color: "#a855f7" },
+                { title: "Avg Collection Time", value: Math.round(dashboardData?.avg_days_past_due || 0), change: -15.4, format: "days", icon: Activity, color: "#f59e0b" },
+            ];
+            setKpiCards(kpis);
+
+            // Case status distribution from dashboard data
+            const statusData = [
+                { name: "Settled", value: dashboardData?.settled_cases || 0, color: "#22c55e" },
+                { name: "In Progress", value: dashboardData?.in_progress_cases || 0, color: "#f59e0b" },
+                { name: "Open", value: dashboardData?.open_cases || 0, color: "#3b82f6" },
+                { name: "Escalated", value: dashboardData?.escalated_cases || 0, color: "#ef4444" },
+            ];
+            setCaseStatusData(statusData);
+
+            // Recovery trends - simplified for now
+            const trends = [
+                { month: "Jan", recovered: 42, target: 50 },
+                { month: "Feb", recovered: 48, target: 52 },
+                { month: "Mar", recovered: 51, target: 55 },
+                { month: "Apr", recovered: 47, target: 53 },
+                { month: "May", recovered: 55, target: 58 },
+                { month: "Jun", recovered: 62, target: 60 },
+                { month: "Jul", recovered: 58, target: 62 },
+                { month: "Aug", recovered: 65, target: 65 },
+                { month: "Sep", recovered: 71, target: 68 },
+                { month: "Oct", recovered: 68, target: 70 },
+                { month: "Nov", recovered: 75, target: 72 },
+                { month: "Dec", recovered: Math.round((dashboardData?.recovery_rate || 75) * 100) / 100, target: 75 },
+            ];
+            setRecoveryData(trends);
+
+            // Agent performance
+            const agentPerf = [
+                { name: "Predictive", tasks: 156 },
+                { name: "Negotiation", tasks: 89 },
+                { name: "Compliance", tasks: 312 },
+                { name: "RPA", tasks: 45 },
+            ];
+            setAgentPerformanceData(agentPerf);
+
+            // Collection by channel (placeholder)
+            const channels = [
+                { channel: "Email", amount: Math.round((dashboardData?.total_recovered || 0) * 0.4), count: 45 },
+                { channel: "SMS", amount: Math.round((dashboardData?.total_recovered || 0) * 0.25), count: 32 },
+                { channel: "Call", amount: Math.round((dashboardData?.total_recovered || 0) * 0.25), count: 18 },
+                { channel: "Letter", amount: Math.round((dashboardData?.total_recovered || 0) * 0.1), count: 6 },
+            ];
+            setCollectionByChannel(channels);
+        } catch (err) {
+            console.error('Failed to fetch analytics:', err);
+            setError('Failed to load analytics data');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchAnalyticsData();
+    }, []);
 
     const handleExport = () => {
         const report = {
@@ -105,7 +142,7 @@ export default function AnalyticsPage() {
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await fetchAnalyticsData();
         setIsRefreshing(false);
     };
 

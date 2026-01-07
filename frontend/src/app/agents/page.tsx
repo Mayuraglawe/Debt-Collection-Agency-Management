@@ -113,7 +113,7 @@ const initialAgents = [
 export default function AgentsPage() {
     const { theme } = useTheme();
     const [agents, setAgents] = useState(initialAgents);
-    const [selectedAgent, setSelectedAgent] = useState(agents[0]);
+    const [selectedAgent, setSelectedAgent] = useState<typeof initialAgents[0] | null>(agents[0] || null);
     const [activeTab, setActiveTab] = useState<'metrics' | 'activity'>('metrics');
     const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -122,7 +122,7 @@ export default function AgentsPage() {
             if (agent.id === agentId) {
                 const newStatus = agent.status === "ACTIVE" ? "IDLE" : "ACTIVE";
                 const updatedAgent = { ...agent, status: newStatus };
-                if (selectedAgent.id === agentId) {
+                if (selectedAgent?.id === agentId) {
                     setSelectedAgent(updatedAgent);
                 }
                 return updatedAgent;
@@ -219,7 +219,7 @@ export default function AgentsPage() {
                                         cursor: 'pointer',
                                         background: cardBg,
                                         backdropFilter: 'blur(12px)',
-                                        border: selectedAgent.id === agent.id ? '2px solid #3b82f6' : `1px solid ${borderColor}`,
+                                        border: selectedAgent?.id === agent.id ? '2px solid #3b82f6' : `1px solid ${borderColor}`,
                                         transition: 'all 0.2s ease'
                                     }}
                                 >
@@ -247,131 +247,138 @@ export default function AgentsPage() {
                     </div>
 
                     {/* Agent Details */}
-                    <div style={{ padding: '24px', borderRadius: '16px', background: cardBg, backdropFilter: 'blur(12px)', border: `1px solid ${borderColor}` }}>
-                        {/* Header */}
-                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                <div style={{ width: '56px', height: '56px', borderRadius: '14px', background: selectedAgent.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <selectedAgent.icon style={{ width: '28px', height: '28px', color: 'white' }} />
-                                </div>
-                                <div>
-                                    <h2 style={{ fontSize: '20px', fontWeight: 700, color: textColor, marginBottom: '4px' }}>{selectedAgent.name}</h2>
-                                    <p style={{ fontSize: '13px', color: mutedColor }}>{selectedAgent.description}</p>
-                                </div>
-                            </div>
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                                <Button
-                                    variant={selectedAgent.status === "ACTIVE" ? "outline" : "default"}
-                                    size="sm"
-                                    onClick={() => toggleAgentStatus(selectedAgent.id)}
-                                    style={{ gap: '8px' }}
-                                >
-                                    {selectedAgent.status === "ACTIVE" ? (
-                                        <><Pause style={{ width: '14px', height: '14px' }} /> Pause</>
-                                    ) : (
-                                        <><Play style={{ width: '14px', height: '14px' }} /> Start</>
-                                    )}
-                                </Button>
-                                <Button variant="outline" size="sm">
-                                    <Settings style={{ width: '14px', height: '14px' }} />
-                                </Button>
-                            </div>
-                        </div>
-
-                        {/* Tabs */}
-                        <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
-                            {(['metrics', 'activity'] as const).map((tab) => (
-                                <motion.button
-                                    key={tab}
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    onClick={() => setActiveTab(tab)}
-                                    style={{
-                                        padding: '8px 16px',
-                                        borderRadius: '8px',
-                                        border: 'none',
-                                        background: activeTab === tab ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2))' : 'transparent',
-                                        color: activeTab === tab ? '#60a5fa' : mutedColor,
-                                        fontSize: '13px',
-                                        fontWeight: 500,
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s ease',
-                                        textTransform: 'capitalize'
-                                    }}
-                                >
-                                    {tab}
-                                </motion.button>
-                            ))}
-                        </div>
-
-                        {/* Content */}
-                        <AnimatePresence mode="wait">
-                            {activeTab === 'metrics' && (
-                                <motion.div
-                                    key="metrics"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                >
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
-                                        {[
-                                            { label: "Uptime", value: selectedAgent.uptime, color: "#22c55e" },
-                                            { label: "Tasks Today", value: selectedAgent.tasksToday.toString() },
-                                            { label: "Total Tasks", value: selectedAgent.tasksTotal.toLocaleString() },
-                                            { label: "Avg Response", value: `${selectedAgent.avgResponseTime}ms` },
-                                        ].map((metric, i) => (
-                                            <div key={i} style={{ padding: '16px', borderRadius: '10px', background: inputBg }}>
-                                                <p style={{ fontSize: '12px', color: mutedColor, marginBottom: '4px' }}>{metric.label}</p>
-                                                <p style={{ fontSize: '20px', fontWeight: 700, color: metric.color || textColor }}>{metric.value}</p>
-                                            </div>
-                                        ))}
+                    {selectedAgent ? (
+                        <div style={{ padding: '24px', borderRadius: '16px', background: cardBg, backdropFilter: 'blur(12px)', border: `1px solid ${borderColor}` }}>
+                            {/* Header */}
+                            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '24px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                                    <div style={{ width: '56px', height: '56px', borderRadius: '14px', background: selectedAgent.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <selectedAgent.icon style={{ width: '28px', height: '28px', color: 'white' }} />
                                     </div>
                                     <div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                            <span style={{ fontSize: '13px', color: mutedColor }}>Accuracy</span>
-                                            <span style={{ fontSize: '13px', fontWeight: 600, color: textColor }}>{selectedAgent.accuracy}%</span>
-                                        </div>
-                                        <div style={{ height: '8px', background: inputBg, borderRadius: '4px', overflow: 'hidden' }}>
-                                            <motion.div
-                                                initial={{ width: 0 }}
-                                                animate={{ width: `${selectedAgent.accuracy}%` }}
-                                                transition={{ duration: 1 }}
-                                                style={{ height: '100%', background: 'linear-gradient(90deg, #3b82f6, #a855f7)', borderRadius: '4px' }}
-                                            />
-                                        </div>
+                                        <h2 style={{ fontSize: '20px', fontWeight: 700, color: textColor, marginBottom: '4px' }}>{selectedAgent.name}</h2>
+                                        <p style={{ fontSize: '13px', color: mutedColor }}>{selectedAgent.description}</p>
                                     </div>
-                                </motion.div>
-                            )}
+                                </div>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <Button
+                                        variant={selectedAgent.status === "ACTIVE" ? "outline" : "default"}
+                                        size="sm"
+                                        onClick={() => toggleAgentStatus(selectedAgent.id)}
+                                        style={{ gap: '8px' }}
+                                    >
+                                        {selectedAgent.status === "ACTIVE" ? (
+                                            <><Pause style={{ width: '14px', height: '14px' }} /> Pause</>
+                                        ) : (
+                                            <><Play style={{ width: '14px', height: '14px' }} /> Start</>
+                                        )}
+                                    </Button>
+                                    <Button variant="outline" size="sm">
+                                        <Settings style={{ width: '14px', height: '14px' }} />
+                                    </Button>
+                                </div>
+                            </div>
 
-                            {activeTab === 'activity' && (
-                                <motion.div
-                                    key="activity"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
-                                >
-                                    {selectedAgent.recentActions.map((action, index) => (
-                                        <motion.div
-                                            key={index}
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: index * 0.05 }}
-                                            style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '8px', background: inputBg }}
-                                        >
-                                            {action.success ? (
-                                                <CheckCircle style={{ width: '16px', height: '16px', color: '#22c55e', flexShrink: 0 }} />
-                                            ) : (
-                                                <XCircle style={{ width: '16px', height: '16px', color: '#ef4444', flexShrink: 0 }} />
-                                            )}
-                                            <span style={{ flex: 1, fontSize: '13px', color: textColor }}>{action.action}</span>
-                                            <span style={{ fontSize: '11px', color: mutedColor }}>{action.time}</span>
-                                        </motion.div>
-                                    ))}
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
+                            {/* Tabs */}
+                            <div style={{ display: 'flex', gap: '8px', marginBottom: '20px' }}>
+                                {(['metrics', 'activity'] as const).map((tab) => (
+                                    <motion.button
+                                        key={tab}
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        onClick={() => setActiveTab(tab)}
+                                        style={{
+                                            padding: '8px 16px',
+                                            borderRadius: '8px',
+                                            border: 'none',
+                                            background: activeTab === tab ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2))' : 'transparent',
+                                            color: activeTab === tab ? '#60a5fa' : mutedColor,
+                                            fontSize: '13px',
+                                            fontWeight: 500,
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease',
+                                            textTransform: 'capitalize'
+                                        }}
+                                    >
+                                        {tab}
+                                    </motion.button>
+                                ))}
+                            </div>
+
+                            {/* Content */}
+                            <AnimatePresence mode="wait">
+                                {activeTab === 'metrics' && (
+                                    <motion.div
+                                        key="metrics"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                    >
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginBottom: '20px' }}>
+                                            {[
+                                                { label: "Uptime", value: selectedAgent.uptime, color: "#22c55e" },
+                                                { label: "Tasks Today", value: selectedAgent.tasksToday.toString() },
+                                                { label: "Total Tasks", value: selectedAgent.tasksTotal.toLocaleString() },
+                                                { label: "Avg Response", value: `${selectedAgent.avgResponseTime}ms` },
+                                            ].map((metric, i) => (
+                                                <div key={i} style={{ padding: '16px', borderRadius: '10px', background: inputBg }}>
+                                                    <p style={{ fontSize: '12px', color: mutedColor, marginBottom: '4px' }}>{metric.label}</p>
+                                                    <p style={{ fontSize: '20px', fontWeight: 700, color: metric.color || textColor }}>{metric.value}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                                <span style={{ fontSize: '13px', color: mutedColor }}>Accuracy</span>
+                                                <span style={{ fontSize: '13px', fontWeight: 600, color: textColor }}>{selectedAgent.accuracy}%</span>
+                                            </div>
+                                            <div style={{ height: '8px', background: inputBg, borderRadius: '4px', overflow: 'hidden' }}>
+                                                <motion.div
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: `${selectedAgent.accuracy}%` }}
+                                                    transition={{ duration: 1 }}
+                                                    style={{ height: '100%', background: 'linear-gradient(90deg, #3b82f6, #a855f7)', borderRadius: '4px' }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+
+                                {activeTab === 'activity' && (
+                                    <motion.div
+                                        key="activity"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+                                    >
+                                        {selectedAgent.recentActions.map((action, index) => (
+                                            <motion.div
+                                                key={index}
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: index * 0.05 }}
+                                                style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '8px', background: inputBg }}
+                                            >
+                                                {action.success ? (
+                                                    <CheckCircle style={{ width: '16px', height: '16px', color: '#22c55e', flexShrink: 0 }} />
+                                                ) : (
+                                                    <XCircle style={{ width: '16px', height: '16px', color: '#ef4444', flexShrink: 0 }} />
+                                                )}
+                                                <span style={{ flex: 1, fontSize: '13px', color: textColor }}>{action.action}</span>
+                                                <span style={{ fontSize: '11px', color: mutedColor }}>{action.time}</span>
+                                            </motion.div>
+                                        ))}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    ) : (
+                        <div style={{ padding: '48px', textAlign: 'center', borderRadius: '16px', background: cardBg, backdropFilter: 'blur(12px)', border: `1px solid ${borderColor}` }}>
+                            <Loader2 style={{ width: '48px', height: '48px', margin: '0 auto 16px', color: '#3b82f6', animation: 'spin 1s linear infinite' }} />
+                            <p style={{ color: mutedColor, fontSize: '14px' }}>Loading agents...</p>
+                        </div>
+                    )}
                 </div>
             </div>
 

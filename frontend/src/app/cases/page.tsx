@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -16,72 +16,23 @@ import {
     Download,
     RefreshCw,
     Loader2,
+    AlertCircle,
 } from "lucide-react";
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency, getStatusColor, getPriorityColor } from "@/lib/utils";
 import { useTheme } from "@/lib/theme-context";
+import { api } from "@/lib/supabase";
 
-const initialCases = [
-    {
-        id: "DCA-2024-1234",
-        debtor: { name: "Rahul Sharma", email: "rahul@email.com", phone: "+91 98765 43210" },
-        amount: 125000,
-        originalAmount: 150000,
-        status: "IN_PROGRESS",
-        priority: "HIGH",
-        recoveryProb: 78,
-        dueDate: "2024-01-15",
-        daysPastDue: 45,
-        lastContact: "2024-01-10",
-        assignedAgent: "Negotiation Agent",
-    },
-    {
-        id: "DCA-2024-1235",
-        debtor: { name: "Priya Patel", email: "priya@email.com", phone: "+91 98765 43211" },
-        amount: 89000,
-        originalAmount: 89000,
-        status: "OPEN",
-        priority: "MEDIUM",
-        recoveryProb: 65,
-        dueDate: "2024-01-18",
-        daysPastDue: 30,
-        lastContact: null,
-        assignedAgent: null,
-    },
-    {
-        id: "DCA-2024-1236",
-        debtor: { name: "Amit Kumar", email: "amit@email.com", phone: "+91 98765 43212" },
-        amount: 234000,
-        originalAmount: 300000,
-        status: "ESCALATED",
-        priority: "CRITICAL",
-        recoveryProb: 34,
-        dueDate: "2024-01-10",
-        daysPastDue: 90,
-        lastContact: "2024-01-08",
-        assignedAgent: "Compliance Agent",
-    },
-    {
-        id: "DCA-2024-1237",
-        debtor: { name: "Sunita Reddy", email: "sunita@email.com", phone: "+91 98765 43213" },
-        amount: 0,
-        originalAmount: 56000,
-        status: "SETTLED",
-        priority: "LOW",
-        recoveryProb: 100,
-        dueDate: "2024-01-20",
-        daysPastDue: 0,
-        lastContact: "2024-01-12",
-        assignedAgent: "RPA Agent",
-    },
-];
+
 
 export default function CasesPage() {
     const router = useRouter();
     const { theme } = useTheme();
-    const [cases, setCases] = useState(initialCases);
+    const [cases, setCases] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("all");
     const [selectedPriority, setSelectedPriority] = useState("all");
@@ -89,6 +40,44 @@ export default function CasesPage() {
     const [showCaseDetails, setShowCaseDetails] = useState<string | null>(null);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [showFilters, setShowFilters] = useState(false);
+
+    // Fetch cases from API
+    const fetchCases = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const result = await api.get<{ data: any[] }>('/cases?limit=100');
+            const mappedCases = (result?.data || []).map((c: any) => ({
+                id: c.case_number,
+                debtor: {
+                    name: c.debtor_name || 'Unknown',
+                    email: c.debtor_email || '',
+                    phone: c.debtor_phone || ''
+                },
+                amount: c.amount,
+                originalAmount: c.original_amount,
+                status: c.status,
+                priority: c.priority,
+                recoveryProb: Math.round((c.recovery_probability || 0) * 100),
+                dueDate: c.due_date,
+                daysPastDue: c.days_past_due || 0,
+                lastContact: c.updated_at,
+                assignedAgent: c.assigned_agent_id || null,
+            }));
+            setCases(mappedCases);
+        } catch (err) {
+            console.error('Failed to fetch cases:', err);
+            setError('Failed to load cases');
+            // Fallback to empty array
+            setCases([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchCases();
+    }, []);
 
     const statusCounts = {
         all: cases.length,
@@ -113,7 +102,7 @@ export default function CasesPage() {
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await fetchCases();
         setIsRefreshing(false);
     };
 
