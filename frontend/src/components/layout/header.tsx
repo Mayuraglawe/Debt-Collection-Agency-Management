@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { Bell, Search, Moon, Sun, X } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Bell, Search, Moon, Sun, X, User, LogOut, Settings } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/lib/theme-context";
+import { useAuth } from "@/lib/auth-context";
+
 
 interface HeaderProps {
     title: string;
@@ -17,13 +20,44 @@ const notifications = [
 ];
 
 export function Header({ title, subtitle }: HeaderProps) {
+    const router = useRouter();
+    const { user, signOut } = useAuth();
     const [showNotifications, setShowNotifications] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
+    const [showUserMenu, setShowUserMenu] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [notificationList, setNotificationList] = useState(notifications);
     const { theme, toggleTheme } = useTheme();
+    const userMenuRef = useRef<HTMLDivElement>(null);
 
     const unreadCount = notificationList.filter(n => !n.read).length;
+
+    // Close user menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+                setShowUserMenu(false);
+            }
+        };
+        if (showUserMenu) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [showUserMenu]);
+
+    const handleSignOut = async () => {
+        await signOut();
+        router.push('/');
+    };
+
+    const getRoleBadgeColor = (role: string) => {
+        switch (role) {
+            case 'ADMIN': return { bg: 'rgba(239, 68, 68, 0.15)', color: '#ef4444' };
+            case 'MANAGER': return { bg: 'rgba(168, 85, 247, 0.15)', color: '#a855f7' };
+            case 'AGENT': return { bg: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6' };
+            default: return { bg: 'rgba(148, 163, 184, 0.15)', color: '#94a3b8' };
+        }
+    };
 
     const markAsRead = (id: number) => {
         setNotificationList(prev =>
@@ -49,6 +83,8 @@ export function Header({ title, subtitle }: HeaderProps) {
     const textColor = theme === "light" ? "#1e293b" : "#f1f5f9";
     const mutedColor = theme === "light" ? "#64748b" : "#94a3b8";
     const inputBg = theme === "light" ? "rgba(226, 232, 240, 0.8)" : "rgba(30, 41, 59, 0.8)";
+
+
 
     return (
         <header
@@ -287,7 +323,136 @@ export function Header({ title, subtitle }: HeaderProps) {
                         )}
                     </motion.div>
                 </motion.button>
+
+                {/* User Menu */}
+                {user && (
+                    <div style={{ position: 'relative' }} ref={userMenuRef}>
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={() => setShowUserMenu(!showUserMenu)}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                padding: '6px 12px',
+                                borderRadius: '10px',
+                                border: `1px solid ${borderColor}`,
+                                background: showUserMenu ? inputBg : 'transparent',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease'
+                            }}
+                        >
+                            <div style={{
+                                width: '32px',
+                                height: '32px',
+                                borderRadius: '8px',
+                                background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}>
+                                <User style={{ width: '16px', height: '16px', color: 'white' }} />
+                            </div>
+                            <div style={{ textAlign: 'left' }}>
+                                <p style={{ fontSize: '13px', fontWeight: 500, color: textColor, margin: 0 }}>
+                                    {user.full_name || user.email?.split('@')[0] || 'User'}
+                                </p>
+                                <span style={{
+                                    fontSize: '10px',
+                                    padding: '2px 6px',
+                                    borderRadius: '4px',
+                                    background: getRoleBadgeColor(user.role || 'AGENT').bg,
+                                    color: getRoleBadgeColor(user.role || 'AGENT').color,
+                                    fontWeight: 500
+                                }}>
+                                    {user.role || 'AGENT'}
+                                </span>
+                            </div>
+                        </motion.button>
+
+                        {/* User Dropdown Menu */}
+                        <AnimatePresence>
+                            {showUserMenu && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    style={{
+                                        position: 'absolute',
+                                        top: '100%',
+                                        right: 0,
+                                        marginTop: '8px',
+                                        width: '200px',
+                                        borderRadius: '12px',
+                                        overflow: 'hidden',
+                                        zIndex: 9999,
+                                        background: theme === 'light' ? '#ffffff' : '#1e293b',
+                                        border: `1px solid ${borderColor}`,
+                                        boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
+                                    }}
+                                >
+                                    <div style={{ padding: '12px 16px', borderBottom: `1px solid ${borderColor}` }}>
+                                        <p style={{ fontSize: '13px', fontWeight: 500, color: textColor, margin: 0 }}>
+                                            {user.full_name || 'User'}
+                                        </p>
+                                        <p style={{ fontSize: '11px', color: mutedColor, margin: '2px 0 0 0' }}>
+                                            {user.email}
+                                        </p>
+                                    </div>
+                                    <div style={{ padding: '8px' }}>
+                                        <button
+                                            onClick={() => { setShowUserMenu(false); router.push('/settings'); }}
+                                            style={{
+                                                width: '100%',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '10px',
+                                                padding: '10px 12px',
+                                                borderRadius: '8px',
+                                                border: 'none',
+                                                background: 'transparent',
+                                                cursor: 'pointer',
+                                                color: textColor,
+                                                fontSize: '13px',
+                                                transition: 'background 0.2s ease'
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.background = inputBg}
+                                            onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                        >
+                                            <Settings style={{ width: '16px', height: '16px', color: mutedColor }} />
+                                            Settings
+                                        </button>
+                                        <button
+                                            onClick={handleSignOut}
+                                            style={{
+                                                width: '100%',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '10px',
+                                                padding: '10px 12px',
+                                                borderRadius: '8px',
+                                                border: 'none',
+                                                background: 'transparent',
+                                                cursor: 'pointer',
+                                                color: '#ef4444',
+                                                fontSize: '13px',
+                                                transition: 'background 0.2s ease'
+                                            }}
+                                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
+                                            onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                        >
+                                            <LogOut style={{ width: '16px', height: '16px' }} />
+                                            Sign Out
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                )}
             </div>
+
 
             {/* Click outside to close notifications */}
             {showNotifications && (
