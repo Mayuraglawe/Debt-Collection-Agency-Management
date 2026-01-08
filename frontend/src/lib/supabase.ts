@@ -1,10 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://mwdofqdltingaspryanv.supabase.co';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13ZG9mcWRsdGluZ2FzcHJ5YW52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MjA4NTcsImV4cCI6MjA4MzI5Njg1N30.ImIZzZWd8dbk4Bxhk8StoumycjaoPzjr_s1x27kqTtQ';
 
-if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn('Supabase environment variables not set');
+if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    console.warn('Using fallback Supabase configuration');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -54,6 +54,31 @@ export const api = {
     delete: <T>(endpoint: string) =>
         apiClient<T>(endpoint, { method: 'DELETE' }),
 };
+
+// Authentication types
+export type UserRole = 'ADMIN' | 'MANAGER' | 'AGENT' | 'VIEWER';
+
+export interface UserProfile {
+    id: string;
+    email: string;
+    full_name: string | null;
+    avatar_url: string | null;
+    role: UserRole;
+    department: string | null;
+    phone: string | null;
+    is_active: boolean;
+    last_login_at: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface AuthUser {
+    id: string;
+    email: string;
+    role: UserRole;
+    full_name: string | null;
+    avatar_url: string | null;
+}
 
 // Database types
 export interface Debtor {

@@ -232,9 +232,9 @@ export default function LandingPage() {
               justifyContent: 'center',
               marginBottom: '80px'
             }}>
-              <Link href="/dashboard">
+              <Link href="/sign-in">
                 <Button size="lg" style={{ fontSize: '16px', padding: '12px 32px', height: 'auto' }}>
-                  Enter Dashboard <ArrowRight style={{ marginLeft: '8px', width: '20px', height: '20px' }} />
+                  Get Started <ArrowRight style={{ marginLeft: '8px', width: '20px', height: '20px' }} />
                 </Button>
               </Link>
               <Button variant="outline" size="lg" style={{ fontSize: '16px', padding: '12px 32px', height: 'auto' }}>
@@ -429,7 +429,7 @@ export default function LandingPage() {
               }}>
                 Experience the power of AI-driven debt collection management with Atlas DCA.
               </p>
-              <Link href="/dashboard">
+              <Link href="/sign-in">
                 <Button size="lg" style={{ fontSize: '16px', padding: '14px 40px', height: 'auto' }}>
                   Get Started <ArrowRight style={{ marginLeft: '8px', width: '20px', height: '20px' }} />
                 </Button>

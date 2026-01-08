@@ -67,23 +67,24 @@ router.post('/recovery', async (req: AuthenticatedRequest, res: Response, next: 
                 .from('cases')
                 .select('debtor_id')
                 .eq('id', case_id)
-                .single();
+            .single();
             debtorId = caseData?.debtor_id;
         }
 
         // Save prediction to database
+        const predictionData = prediction as any; // Type assertion to fix TS errors
         const { data: savedPrediction, error: saveError } = await supabaseAdmin
             .from('predictions')
             .insert({
                 case_id,
                 debtor_id: debtorId,
-                recovery_probability: prediction.recovery_probability,
-                risk_category: prediction.risk_category,
-                recommended_strategy: prediction.recommended_strategy,
+                recovery_probability: predictionData.recovery_probability,
+                risk_category: predictionData.risk_category,
+                recommended_strategy: predictionData.recommended_strategy,
                 model_version: '1.0.0',
                 model_name: 'xgboost_recovery_v1',
                 features: predictionFeatures,
-                confidence_score: prediction.confidence_score || 0.85,
+                confidence_score: predictionData.confidence_score || 0.85,
             })
             .select()
             .single();
@@ -94,8 +95,8 @@ router.post('/recovery', async (req: AuthenticatedRequest, res: Response, next: 
         await supabaseAdmin
             .from('cases')
             .update({
-                recovery_probability: prediction.recovery_probability,
-                recommended_strategy: prediction.recommended_strategy,
+                recovery_probability: predictionData.recovery_probability,
+                recommended_strategy: predictionData.recommended_strategy,
             })
             .eq('id', case_id);
 
@@ -113,7 +114,7 @@ router.post('/recovery', async (req: AuthenticatedRequest, res: Response, next: 
         res.json({
             prediction_id: savedPrediction?.id,
             case_id,
-            ...prediction,
+            ...predictionData,
             features: predictionFeatures,
             timestamp: new Date().toISOString(),
         });
