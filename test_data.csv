@@ -1,0 +1,6 @@
+Name,Email,Phone,Amount,Address,City,State,PostalCode,Priority
+Rajesh Kumar,rajesh.test@example.com,+91-9876543210,150000,123 MG Road,Mumbai,Maharashtra,400001,HIGH
+Priya Sharma,priya.test@example.com,+91-9876543211,75000,456 Park Street,Kolkata,West Bengal,700016,MEDIUM
+Amit Patel,amit.test@example.com,+91-9876543212,250000,789 Brigade Road,Bangalore,Karnataka,560001,CRITICAL
+Sneha Reddy,sneha.test@example.com,+91-9876543213,45000,321 Hitech City,Hyderabad,Telangana,500081,LOW
+Vikram Singh,vikram.test@example.com,+91-9876543214,180000,654 CP,Delhi,Delhi,110001,HIGH

@@ -14,17 +14,72 @@ import {
     ChevronRight,
     LogOut,
     HelpCircle,
+    Upload,
+    GitBranch,
+    Users,
+    FileText,
+    UserPlus,
+    Shield,
+    ListChecks,
+    Phone,
+    CreditCard,
 } from "lucide-react";
 import { useTheme } from "@/lib/theme-context";
 import { useAuth } from "@/lib/auth-context";
 
 
-const navItems = [
-    { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-    { icon: Briefcase, label: "Cases", href: "/cases" },
-    { icon: Bot, label: "Agents", href: "/agents" },
-    { icon: BarChart3, label: "Analytics", href: "/analytics" },
-];
+// Role-based navigation items
+const getNavItems = (role?: string) => {
+    if (role === 'ADMIN') {
+        return [
+            { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+            { icon: Upload, label: "Data Ingestion", href: "/admin/data-ingestion" },
+            { icon: Settings, label: "Allocation Rules", href: "/admin/allocation-rules" },
+            { icon: GitBranch, label: "Case Allocation", href: "/admin/case-allocation" },
+            { icon: BarChart3, label: "Analytics", href: "/admin/analytics" },
+            { icon: Users, label: "User Management", href: "/admin/users" },
+            { icon: FileText, label: "SOP & Rules", href: "/admin/sop-rules" },
+            { icon: Settings, label: "System Config", href: "/admin/system-config" },
+        ];
+    }
+
+    if (role === 'MANAGER') {
+        return [
+            { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+            { icon: Briefcase, label: "My Cases", href: "/manager/cases" },
+            { icon: UserPlus, label: "Assign Cases", href: "/manager/assign-cases" },
+            { icon: Users, label: "Team Performance", href: "/manager/team-dashboard" },
+            { icon: Shield, label: "Audit & Compliance", href: "/manager/audit" },
+        ];
+    }
+
+    // AGENT navigation
+    if (role === 'AGENT') {
+        return [
+            { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+            { icon: ListChecks, label: "My Worklist", href: "/agent/worklist" },
+            { icon: Phone, label: "Take Action", href: "/agent/actions" },
+            { icon: CreditCard, label: "Process Payment", href: "/agent/payment" },
+        ];
+    }
+
+    // COMPLIANCE_OFFICER navigation
+    if (role === 'COMPLIANCE_OFFICER') {
+        return [
+            { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+            { icon: Shield, label: "Compliance Dashboard", href: "/compliance/dashboard" },
+            { icon: FileText, label: "Reports", href: "/compliance/reports" },
+            { icon: Shield, label: "Audit Trail", href: "/manager/audit" },
+        ];
+    }
+
+    // Default/VIEWER role
+    return [
+        { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+        { icon: Briefcase, label: "Cases", href: "/cases" },
+        { icon: BarChart3, label: "Analytics", href: "/analytics" },
+    ];
+};
 
 const bottomNavItems = [
     { icon: Settings, label: "Settings", href: "/settings" },
@@ -130,7 +185,7 @@ export function Sidebar() {
 
                 {/* Navigation */}
                 <nav style={{ flex: 1, padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    {navItems.map((item) => {
+                    {getNavItems(user?.role).map((item) => {
                         const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
                         return (
                             <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
