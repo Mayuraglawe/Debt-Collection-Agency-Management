@@ -46,3 +46,35 @@ export function getPriorityColor(priority: string): string {
   };
   return colors[priority] || colors.MEDIUM;
 }
+
+// Workflow-specific utilities
+export function formatRelativeDate(date: string | Date): string {
+  const now = new Date();
+  const targetDate = new Date(date);
+  const diffMs = targetDate.getTime() - now.getTime();
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) return `${Math.abs(diffDays)} days overdue`;
+  if (diffDays === 0) return 'Due today';
+  if (diffDays === 1) return 'Due tomorrow';
+  return `Due in ${diffDays} days`;
+}
+
+export function calculateRecoveryRate(recovered: number, total: number): number {
+  if (total === 0) return 0;
+  return (recovered / total) * 100;
+}
+
+export function getWorkflowStatusColor(status: string): string {
+  const colors: Record<string, string> = {
+    PENDING: '#94a3b8',
+    ALLOCATED: '#3b82f6',
+    ASSIGNED: '#8b5cf6',
+    IN_PROGRESS: '#eab308',
+    RESOLVED: '#22c55e',
+    ESCALATED: '#ef4444',
+    CLOSED: '#6b7280',
+  };
+  return colors[status] || colors.PENDING;
+}
+
