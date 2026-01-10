@@ -25,6 +25,8 @@ import {
     CreditCard,
 } from "lucide-react";
 import { useTheme } from "@/lib/theme-context";
+import { useAuth } from "@/lib/auth-context";
+
 
 // Role-based navigation items
 const getNavItems = (role?: string) => {
@@ -90,22 +92,39 @@ export function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
     const { theme } = useTheme();
+    const { user, signOut } = useAuth();
 
     const sidebarWidth = collapsed ? 80 : 260;
 
-    const handleLogout = () => {
-        // Clear any stored auth tokens
-        localStorage.removeItem("atlas-auth-token");
-        localStorage.removeItem("atlas-user");
-
-        // Redirect to landing page
+    const handleLogout = async () => {
+        await signOut();
         router.push("/");
+    };
+
+    const getRoleBadgeStyle = (role: string) => {
+        switch (role) {
+            case 'ADMIN': return { bg: '#ef4444', color: 'white' };
+            case 'MANAGER': return { bg: '#a855f7', color: 'white' };
+            case 'AGENT': return { bg: '#3b82f6', color: 'white' };
+            default: return { bg: '#64748b', color: 'white' };
+        }
+    };
+
+    const getUserInitials = () => {
+        if (user?.full_name) {
+            return user.full_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        }
+        if (user?.email) {
+            return user.email.slice(0, 2).toUpperCase();
+        }
+        return 'U';
     };
 
     const bgColor = theme === "light" ? "rgba(241, 245, 249, 0.95)" : "rgba(15, 23, 42, 0.95)";
     const borderColor = theme === "light" ? "rgba(148, 163, 184, 0.3)" : "rgba(51, 65, 85, 0.5)";
     const textColor = theme === "light" ? "#1e293b" : "#f1f5f9";
     const mutedColor = theme === "light" ? "#64748b" : "#94a3b8";
+
 
     return (
         <>
@@ -279,13 +298,13 @@ export function Sidebar() {
                             width: '36px',
                             height: '36px',
                             borderRadius: '10px',
-                            background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                            background: user?.role ? getRoleBadgeStyle(user.role).bg : 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             flexShrink: 0
                         }}>
-                            <span style={{ color: 'white', fontWeight: 600, fontSize: '14px' }}>AD</span>
+                            <span style={{ color: 'white', fontWeight: 600, fontSize: '14px' }}>{getUserInitials()}</span>
                         </div>
                         <AnimatePresence mode="wait">
                             {!collapsed && (
@@ -295,28 +314,45 @@ export function Sidebar() {
                                     exit={{ opacity: 0 }}
                                     style={{ flex: 1, minWidth: 0 }}
                                 >
-                                    <p style={{
-                                        fontSize: '13px',
-                                        fontWeight: 500,
-                                        color: textColor,
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        whiteSpace: 'nowrap'
-                                    }}>
-                                        Admin User
-                                    </p>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+                                        <p style={{
+                                            fontSize: '13px',
+                                            fontWeight: 500,
+                                            color: textColor,
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap',
+                                            margin: 0
+                                        }}>
+                                            {user?.full_name || user?.email?.split('@')[0] || 'User'}
+                                        </p>
+                                        {user?.role && (
+                                            <span style={{
+                                                fontSize: '9px',
+                                                fontWeight: 600,
+                                                padding: '2px 5px',
+                                                borderRadius: '4px',
+                                                background: getRoleBadgeStyle(user.role).bg,
+                                                color: getRoleBadgeStyle(user.role).color
+                                            }}>
+                                                {user.role}
+                                            </span>
+                                        )}
+                                    </div>
                                     <p style={{
                                         fontSize: '11px',
                                         color: mutedColor,
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis',
-                                        whiteSpace: 'nowrap'
+                                        whiteSpace: 'nowrap',
+                                        margin: 0
                                     }}>
-                                        admin@atlas-dca.com
+                                        {user?.email || 'user@atlasdca.com'}
                                     </p>
                                 </motion.div>
                             )}
                         </AnimatePresence>
+
                         {!collapsed && (
                             <motion.button
                                 whileHover={{ scale: 1.1 }}

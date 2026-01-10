@@ -88,14 +88,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (error) return { error };
 
-      // Update last login
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-      if (authUser) {
-        await supabase
-          .from('profiles')
-          .update({ last_login_at: new Date().toISOString() })
-          .eq('id', authUser.id);
-      }
+      // Update last login (non-blocking - don't wait for it)
+      supabase.auth.getUser().then(async ({ data: { user: authUser } }) => {
+        if (authUser) {
+          try {
+            await supabase
+              .from('profiles')
+              .update({ last_login_at: new Date().toISOString() })
+              .eq('id', authUser.id);
+            console.log('Last login updated');
+          } catch (err) {
+            console.warn('Failed to update last login:', err);
+          }
+        }
+      });
 
       return { error: null };
     } catch (error) {
