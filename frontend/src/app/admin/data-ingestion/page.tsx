@@ -91,6 +91,30 @@ export default function DataIngestionPage() {
 
             if (logError) throw logError;
 
+            // ✅ REAL-TIME PROGRESS: Start polling for updates
+            const progressInterval = setInterval(async () => {
+                const { data: progressLog } = await supabase
+                    .from('csv_import_logs')
+                    .select('successful_rows, failed_rows, total_rows, status')
+                    .eq('id', importLog.id)
+                    .single();
+
+                if (progressLog && progressLog.total_rows > 0) {
+                    const processed = (progressLog.successful_rows || 0) + (progressLog.failed_rows || 0);
+                    const percent = Math.round((processed / progressLog.total_rows) * 100);
+
+                    // Update progress in UI (you can display this)
+                    console.log(`⏳ Processing: ${percent}% (${processed}/${progressLog.total_rows} rows)`);
+
+                    // Stop polling if complete
+                    if (progressLog.status === 'COMPLETED' ||
+                        progressLog.status === 'FAILED' ||
+                        progressLog.status === 'PARTIAL') {
+                        clearInterval(progressInterval);
+                    }
+                }
+            }, 500); // Poll every 500ms for real-time updates
+
             // Step 2: Call Edge Function
             const { data: { session } } = await supabase.auth.getSession();
 
@@ -109,6 +133,9 @@ export default function DataIngestionPage() {
                     })
                 }
             );
+
+            // Clear interval when done
+            clearInterval(progressInterval);
 
             if (!response.ok) {
                 const errorData = await response.json();

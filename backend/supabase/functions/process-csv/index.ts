@@ -61,7 +61,9 @@ serve(async (req) => {
             })
             .eq('id', importLogId)
 
-        // Process each row (skip header)
+        // Process each row (skip header) with REAL-TIME progress updates
+        const BATCH_SIZE = 10; // Update progress every 10 rows
+
         for (let i = 1; i < lines.length; i++) {
             try {
                 const values = lines[i].split(',').map((v: string) => v.trim())
@@ -141,6 +143,25 @@ serve(async (req) => {
                     row: i + 1,
                     error: error.message
                 })
+            }
+
+            // ✅ REAL-TIME PROGRESS: Update every BATCH_SIZE rows
+            if (i % BATCH_SIZE === 0 || i === lines.length - 1) {
+                const progressPercent = Math.round((i / (lines.length - 1)) * 100);
+
+                await supabaseClient
+                    .from('csv_import_logs')
+                    .update({
+                        successful_rows: successCount,
+                        failed_rows: failCount,
+                        errors: errors,
+                        // Add progress tracking
+                        total_rows: lines.length - 1,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', importLogId)
+
+                console.log(`Progress: ${progressPercent}% (${i}/${lines.length - 1} rows)`);
             }
         }
 
