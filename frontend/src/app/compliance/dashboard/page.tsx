@@ -115,7 +115,7 @@ export default function ComplianceDashboardPage() {
 
     return (
         <AuthGuard allowedRoles={['ADMIN', 'COMPLIANCE_OFFICER']}>
-            <div className="min-h-screen p-8" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)' }}>
+            <div className="min-h-screen p-8 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
                 {/* Header */}
                 <div className="mb-8">
                     <div className="flex items-center gap-3">
@@ -159,14 +159,14 @@ export default function ComplianceDashboardPage() {
                 </div>
 
                 {/* Compliance Score Visualization */}
-                <div className="mb-8 p-6 rounded-xl" style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                <div className="mb-8 p-6 rounded-xl bg-slate-800/50 border border-slate-400/20">
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <h2 className="text-xl font-bold text-white">Overall Compliance Score</h2>
                             <p className="text-sm text-slate-400">Target: ≥ 95%</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-4xl font-bold" style={{ color: stats.complianceRate >= 95 ? '#22c55e' : '#eab308' }}>
+                            <p className={`text-4xl font-bold ${stats.complianceRate >= 95 ? 'compliance-good' : 'compliance-warning'}`}>
                                 {stats.complianceRate.toFixed(1)}%
                             </p>
                             <p className="text-xs text-slate-400">{stats.compliantActions} / {stats.totalActions} actions</p>
@@ -174,11 +174,8 @@ export default function ComplianceDashboardPage() {
                     </div>
                     <div className="h-4 bg-slate-700 rounded-full overflow-hidden">
                         <div
-                            className="h-full transition-all duration-500"
-                            style={{
-                                width: `${stats.complianceRate}%`,
-                                background: stats.complianceRate >= 95 ? 'linear-gradient(90deg, #22c55e, #10b981)' : 'linear-gradient(90deg, #eab308, #f59e0b)'
-                            }}
+                            className={`h-full transition-all duration-500 progress-bar ${stats.complianceRate >= 95 ? 'bg-gradient-to-r from-green-500 to-emerald-600' : 'bg-gradient-to-r from-yellow-500 to-amber-600'}`}
+                            data-width={Math.round(stats.complianceRate).toString()}
                         />
                     </div>
                 </div>
@@ -191,7 +188,7 @@ export default function ComplianceDashboardPage() {
                 </div>
 
                 {/* Violations Table */}
-                <div className="rounded-xl overflow-hidden" style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                <div className="rounded-xl overflow-hidden bg-slate-800/50 border border-slate-400/20">
                     {loading ? (
                         <div className="p-20 text-center">
                             <div className="w-12 h-12 border-4 border-red-500/30 border-t-red-500 rounded-full animate-spin mx-auto mb-4" />
@@ -206,7 +203,7 @@ export default function ComplianceDashboardPage() {
                     ) : (
                         <table className="w-full">
                             <thead>
-                                <tr style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                                <tr className="border-b border-slate-400/20">
                                     <th className="text-left p-4 text-sm font-semibold text-slate-400">Occurred</th>
                                     <th className="text-left p-4 text-sm font-semibold text-slate-400">Type</th>
                                     <th className="text-left p-4 text-sm font-semibold text-slate-400">Agent</th>
@@ -220,7 +217,7 @@ export default function ComplianceDashboardPage() {
                                 {violations.map(violation => {
                                     const severityStyle = getSeverityColor(violation.severity);
                                     return (
-                                        <tr key={violation.id} style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.1)' }}>
+                                        <tr key={violation.id} className="border-b border-slate-400/10">
                                             <td className="p-4 text-sm text-slate-300">
                                                 {new Date(violation.occurred_at).toLocaleDateString()}
                                                 <br />
@@ -240,8 +237,12 @@ export default function ComplianceDashboardPage() {
                                             </td>
                                             <td className="p-4">
                                                 <span
-                                                    className="text-xs px-2 py-1 rounded font-medium"
-                                                    style={{ background: severityStyle.bg + '30', color: severityStyle.text }}
+                                                    className={`text-xs px-2 py-1 rounded font-medium ${
+                                                        violation.severity === 'CRITICAL' ? 'bg-red-500/20 text-red-400' :
+                                                        violation.severity === 'HIGH' ? 'bg-orange-500/20 text-orange-400' :
+                                                        violation.severity === 'MEDIUM' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                        'bg-blue-500/20 text-blue-400'
+                                                    }`}
                                                 >
                                                     {violation.severity}
                                                 </span>
@@ -293,15 +294,15 @@ export default function ComplianceDashboardPage() {
 
 function KPICard({ icon: Icon, label, value, color, trend }: any) {
     return (
-        <div className="p-5 rounded-xl" style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+        <div className="p-5 rounded-xl bg-slate-800/50 border border-slate-400/20">
             <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: color + '30' }}>
-                    <Icon className="w-5 h-5" style={{ color }} />
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-red-500/20">
+                    <Icon className="w-5 h-5 text-red-500" />
                 </div>
                 {trend && <span className={`text-xs font-medium ${trend.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>{trend}</span>}
             </div>
             <p className="text-sm text-slate-400 mb-1">{label}</p>
-            <p className="text-3xl font-bold" style={{ color }}>{value}</p>
+            <p className="text-3xl font-bold text-red-500">{value}</p>
         </div>
     );
 }
@@ -310,12 +311,10 @@ function FilterButton({ active, onClick, label }: any) {
     return (
         <button
             onClick={onClick}
-            className="px-4 py-2 rounded-lg text-sm font-medium transition-all"
-            style={{
-                background: active ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(249, 115, 22, 0.2))' : 'rgba(30, 41, 59, 0.5)',
-                border: active ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid rgba(148, 163, 184, 0.2)',
-                color: active ? '#fca5a5' : '#94a3b8'
-            }}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                active ? 'bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-red-500/30 text-red-300' :
+                'bg-slate-800/50 border border-slate-400/20 text-slate-400'
+            }`}
         >
             {label}
         </button>

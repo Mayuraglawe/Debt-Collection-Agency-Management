@@ -88,29 +88,24 @@ export function Header({ title, subtitle }: HeaderProps) {
 
     return (
         <header
-            style={{
-                height: '64px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '0 24px',
-                background: bgColor,
-                backdropFilter: 'blur(12px)',
-                borderBottom: `1px solid ${borderColor}`,
-                position: 'relative',
-                zIndex: 1000
-            }}
+            className={`h-16 flex items-center justify-between px-6 relative z-50 backdrop-blur-xl border-b ${
+                theme === "light" ? "bg-slate-100/95 border-slate-400/30" : "bg-slate-900/95 border-slate-600/50"
+            }`}
         >
             <div>
-                <h1 style={{ fontSize: '20px', fontWeight: 600, color: textColor, marginBottom: '2px' }}>
+                <h1 className={`text-xl font-semibold mb-0.5 ${
+                    theme === "light" ? "text-slate-800" : "text-slate-100"
+                }`}>
                     {title}
                 </h1>
                 {subtitle && (
-                    <p style={{ fontSize: '13px', color: mutedColor }}>{subtitle}</p>
+                    <p className={`text-xs ${
+                        theme === "light" ? "text-slate-600" : "text-slate-400"
+                    }`}>{subtitle}</p>
                 )}
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="flex items-center gap-2">
                 {/* Search */}
                 <AnimatePresence>
                     {showSearch && (
@@ -119,39 +114,24 @@ export function Header({ title, subtitle }: HeaderProps) {
                             animate={{ width: 240, opacity: 1 }}
                             exit={{ width: 0, opacity: 0 }}
                             onSubmit={handleSearch}
-                            style={{ position: 'relative', overflow: 'hidden' }}
+                            className="relative overflow-hidden"
                         >
                             <input
                                 autoFocus
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search cases, debtors..."
-                                style={{
-                                    width: '100%',
-                                    height: '36px',
-                                    paddingLeft: '12px',
-                                    paddingRight: '36px',
-                                    borderRadius: '10px',
-                                    border: '1px solid rgba(59, 130, 246, 0.5)',
-                                    background: inputBg,
-                                    color: textColor,
-                                    fontSize: '13px',
-                                    outline: 'none'
-                                }}
+                                className={`w-full h-9 pl-3 pr-9 rounded-xl border border-blue-500/50 text-xs outline-none ${
+                                    theme === "light" 
+                                        ? "bg-slate-200/80 text-slate-800" 
+                                        : "bg-slate-800/80 text-slate-100"
+                                }`}
                             />
                             <button
                                 type="button"
                                 onClick={() => { setShowSearch(false); setSearchQuery(""); }}
-                                style={{
-                                    position: 'absolute',
-                                    right: '8px',
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
-                                    background: 'transparent',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    padding: '4px'
-                                }}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer p-1"
+                                title="Close search"
                             >
                                 <X style={{ width: '14px', height: '14px', color: mutedColor }} />
                             </button>
@@ -164,61 +144,28 @@ export function Header({ title, subtitle }: HeaderProps) {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setShowSearch(!showSearch)}
-                    style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '10px',
-                        border: 'none',
-                        background: showSearch ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        transition: 'all 0.2s ease'
-                    }}
+                    className={`w-9 h-9 rounded-xl border-none cursor-pointer flex items-center justify-center transition-all ${
+                        showSearch ? 'bg-blue-500/20' : 'bg-transparent'
+                    }`}
                     title="Search"
                 >
                     <Search style={{ width: '18px', height: '18px', color: showSearch ? '#60a5fa' : mutedColor }} />
                 </motion.button>
 
                 {/* Notifications */}
-                <div style={{ position: 'relative' }}>
+                <div className="relative">
                     <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setShowNotifications(!showNotifications)}
-                        style={{
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: '10px',
-                            border: 'none',
-                            background: showNotifications ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            position: 'relative',
-                            transition: 'all 0.2s ease'
-                        }}
+                        className={`w-9 h-9 rounded-xl border-none cursor-pointer flex items-center justify-center relative transition-all ${
+                            showNotifications ? 'bg-blue-500/20' : 'bg-transparent'
+                        }`}
                         title="Notifications"
                     >
                         <Bell style={{ width: '18px', height: '18px', color: showNotifications ? '#60a5fa' : mutedColor }} />
                         {unreadCount > 0 && (
-                            <span style={{
-                                position: 'absolute',
-                                top: '4px',
-                                right: '4px',
-                                width: '16px',
-                                height: '16px',
-                                borderRadius: '50%',
-                                background: '#ef4444',
-                                color: 'white',
-                                fontSize: '10px',
-                                fontWeight: 600,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
+                            <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-red-500 text-white text-xs font-semibold flex items-center justify-center">
                                 {unreadCount}
                             </span>
                         )}
@@ -231,58 +178,65 @@ export function Header({ title, subtitle }: HeaderProps) {
                                 initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                className="fixed top-18 right-6 w-80 rounded-xl overflow-hidden z-[9999] border shadow-2xl"
                                 style={{
-                                    position: 'fixed',
-                                    top: '72px',
-                                    right: '24px',
-                                    width: '320px',
-                                    borderRadius: '12px',
-                                    overflow: 'hidden',
-                                    zIndex: 9999,
                                     background: theme === 'light' ? '#ffffff' : '#0f172a',
-                                    border: `1px solid ${borderColor}`,
-                                    boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
+                                    borderColor: borderColor
                                 }}
                             >
-                                <div style={{ padding: '16px', borderBottom: `1px solid ${borderColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <h3 style={{ fontSize: '14px', fontWeight: 600, color: textColor }}>Notifications</h3>
+                                <div className={`p-4 border-b flex justify-between items-center ${
+                                    theme === "light" ? "border-slate-400/30" : "border-slate-600/50"
+                                }`}>
+                                    <h3 className={`text-sm font-semibold ${
+                                        theme === "light" ? "text-slate-800" : "text-slate-100"
+                                    }`}>Notifications</h3>
                                     {unreadCount > 0 && (
                                         <button
                                             onClick={markAllAsRead}
-                                            style={{ fontSize: '12px', color: '#60a5fa', background: 'transparent', border: 'none', cursor: 'pointer' }}
+                                            className="text-xs text-blue-400 bg-transparent border-none cursor-pointer"
+                                            title="Mark all as read"
                                         >
                                             Mark all as read
                                         </button>
                                     )}
                                 </div>
-                                <div style={{ maxHeight: '300px', overflow: 'auto' }}>
+                                <div className="max-h-75 overflow-auto">
                                     {notificationList.map((notification) => (
                                         <div
                                             key={notification.id}
                                             onClick={() => markAsRead(notification.id)}
-                                            style={{
-                                                padding: '12px 16px',
-                                                borderBottom: `1px solid ${theme === 'light' ? 'rgba(148, 163, 184, 0.2)' : 'rgba(51, 65, 85, 0.3)'}`,
-                                                cursor: 'pointer',
-                                                background: notification.read ? 'transparent' : 'rgba(59, 130, 246, 0.05)',
-                                                transition: 'all 0.2s ease'
-                                            }}
+                                            className={`p-3 px-4 border-b cursor-pointer transition-all ${
+                                                notification.read 
+                                                    ? 'bg-transparent' 
+                                                    : 'bg-blue-500/5'
+                                            } ${
+                                                theme === 'light' ? 'border-slate-400/20' : 'border-slate-600/30'
+                                            }`}
                                         >
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                                                <span style={{ fontSize: '13px', fontWeight: 500, color: textColor }}>{notification.title}</span>
+                                            <div className="flex justify-between items-start mb-1">
+                                                <span className={`text-xs font-medium ${
+                                                    theme === "light" ? "text-slate-800" : "text-slate-100"
+                                                }`}>{notification.title}</span>
                                                 {!notification.read && (
-                                                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3b82f6' }} />
+                                                    <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />
                                                 )}
                                             </div>
-                                            <p style={{ fontSize: '12px', color: mutedColor, marginBottom: '4px' }}>{notification.message}</p>
-                                            <p style={{ fontSize: '11px', color: theme === 'light' ? '#94a3b8' : '#64748b' }}>{notification.time}</p>
+                                            <p className={`text-xs mb-1 ${
+                                                theme === "light" ? "text-slate-600" : "text-slate-400"
+                                            }`}>{notification.message}</p>
+                                            <p className={`text-xs ${
+                                                theme === 'light' ? 'text-slate-500' : 'text-slate-500'
+                                            }`}>{notification.time}</p>
                                         </div>
                                     ))}
                                 </div>
-                                <div style={{ padding: '12px', borderTop: `1px solid ${borderColor}`, textAlign: 'center' }}>
+                                <div className={`p-3 border-t text-center ${
+                                    theme === "light" ? "border-slate-400/30" : "border-slate-600/50"
+                                }`}>
                                     <button
                                         onClick={() => { setShowNotifications(false); window.location.href = '/settings'; }}
-                                        style={{ fontSize: '12px', color: '#60a5fa', background: 'transparent', border: 'none', cursor: 'pointer' }}
+                                        className="text-xs text-blue-400 bg-transparent border-none cursor-pointer"
+                                        title="View all notifications"
                                     >
                                         View all notifications
                                     </button>
@@ -297,18 +251,7 @@ export function Header({ title, subtitle }: HeaderProps) {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={toggleTheme}
-                    style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '10px',
-                        border: 'none',
-                        background: 'transparent',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        transition: 'all 0.2s ease'
-                    }}
+                    className="w-9 h-9 rounded-xl border-none bg-transparent cursor-pointer flex items-center justify-center transition-all"
                     title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
                 >
                     <motion.div
@@ -326,46 +269,37 @@ export function Header({ title, subtitle }: HeaderProps) {
 
                 {/* User Menu */}
                 {user && (
-                    <div style={{ position: 'relative' }} ref={userMenuRef}>
+                    <div className="relative" ref={userMenuRef}>
                         <motion.button
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={() => setShowUserMenu(!showUserMenu)}
+                            className={`flex items-center gap-2.5 p-1.5 px-3 rounded-xl border cursor-pointer transition-all ${
+                                showUserMenu ? '' : ''
+                            }`}
                             style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '10px',
-                                padding: '6px 12px',
-                                borderRadius: '10px',
-                                border: `1px solid ${borderColor}`,
-                                background: showUserMenu ? inputBg : 'transparent',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease'
+                                borderColor: borderColor,
+                                background: showUserMenu ? inputBg : 'transparent'
                             }}
                         >
-                            <div style={{
-                                width: '32px',
-                                height: '32px',
-                                borderRadius: '8px',
-                                background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                                 <User style={{ width: '16px', height: '16px', color: 'white' }} />
                             </div>
-                            <div style={{ textAlign: 'left' }}>
-                                <p style={{ fontSize: '13px', fontWeight: 500, color: textColor, margin: 0 }}>
+                            <div className="text-left">
+                                <p className={`text-xs font-medium m-0 ${
+                                    theme === "light" ? "text-slate-800" : "text-slate-100"
+                                }`}>
                                     {user.full_name || user.email?.split('@')[0] || 'User'}
                                 </p>
-                                <span style={{
-                                    fontSize: '10px',
-                                    padding: '2px 6px',
-                                    borderRadius: '4px',
-                                    background: getRoleBadgeColor(user.role || 'AGENT').bg,
-                                    color: getRoleBadgeColor(user.role || 'AGENT').color,
-                                    fontWeight: 500
-                                }}>
+                                <span 
+                                    className={`text-xs px-1.5 py-0.5 rounded font-medium ${
+                                        user.role === 'ADMIN' ? 'role-badge-admin' :
+                                        user.role === 'MANAGER' ? 'role-badge-manager' :
+                                        user.role === 'COMPLIANCE_OFFICER' ? 'role-badge-compliance' :
+                                        user.role === 'VIEWER' ? 'role-badge-viewer' :
+                                        'role-badge-agent'
+                                    }`}
+                                >
                                     {user.role || 'AGENT'}
                                 </span>
                             </div>
@@ -378,71 +312,43 @@ export function Header({ title, subtitle }: HeaderProps) {
                                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    className="absolute top-full right-0 mt-2 w-50 rounded-xl overflow-hidden z-[9999] border shadow-2xl"
                                     style={{
-                                        position: 'absolute',
-                                        top: '100%',
-                                        right: 0,
-                                        marginTop: '8px',
-                                        width: '200px',
-                                        borderRadius: '12px',
-                                        overflow: 'hidden',
-                                        zIndex: 9999,
                                         background: theme === 'light' ? '#ffffff' : '#1e293b',
-                                        border: `1px solid ${borderColor}`,
-                                        boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
+                                        borderColor: borderColor
                                     }}
                                 >
-                                    <div style={{ padding: '12px 16px', borderBottom: `1px solid ${borderColor}` }}>
-                                        <p style={{ fontSize: '13px', fontWeight: 500, color: textColor, margin: 0 }}>
+                                    <div className={`p-3 px-4 border-b ${
+                                        theme === 'light' ? 'border-slate-400/30' : 'border-slate-600/50'
+                                    }`}>
+                                        <p className={`text-sm font-medium m-0 ${
+                                            theme === 'light' ? 'text-slate-800' : 'text-slate-100'
+                                        }`}>
                                             {user.full_name || 'User'}
                                         </p>
-                                        <p style={{ fontSize: '11px', color: mutedColor, margin: '2px 0 0 0' }}>
+                                        <p className={`text-xs mt-0.5 mb-0 ${
+                                            theme === 'light' ? 'text-slate-600' : 'text-slate-400'
+                                        }`}>
                                             {user.email}
                                         </p>
                                     </div>
-                                    <div style={{ padding: '8px' }}>
+                                    <div className="p-2">
                                         <button
                                             onClick={() => { setShowUserMenu(false); router.push('/settings'); }}
-                                            style={{
-                                                width: '100%',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '10px',
-                                                padding: '10px 12px',
-                                                borderRadius: '8px',
-                                                border: 'none',
-                                                background: 'transparent',
-                                                cursor: 'pointer',
-                                                color: textColor,
-                                                fontSize: '13px',
-                                                transition: 'background 0.2s ease'
-                                            }}
-                                            onMouseEnter={(e) => e.currentTarget.style.background = inputBg}
-                                            onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                            className={`w-full flex items-center gap-2.5 p-2.5 px-3 rounded-lg border-none bg-transparent cursor-pointer text-sm transition-colors hover:bg-slate-700/50 ${
+                                                theme === 'light' ? 'text-slate-800 hover:bg-slate-200/50' : 'text-slate-100'
+                                            }`}
                                         >
-                                            <Settings style={{ width: '16px', height: '16px', color: mutedColor }} />
+                                            <Settings className={`w-4 h-4 ${
+                                                theme === 'light' ? 'text-slate-600' : 'text-slate-400'
+                                            }`} />
                                             Settings
                                         </button>
                                         <button
                                             onClick={handleSignOut}
-                                            style={{
-                                                width: '100%',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '10px',
-                                                padding: '10px 12px',
-                                                borderRadius: '8px',
-                                                border: 'none',
-                                                background: 'transparent',
-                                                cursor: 'pointer',
-                                                color: '#ef4444',
-                                                fontSize: '13px',
-                                                transition: 'background 0.2s ease'
-                                            }}
-                                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
-                                            onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                            className="w-full flex items-center gap-2.5 p-2.5 px-3 rounded-lg border-none bg-transparent cursor-pointer text-red-400 text-sm transition-colors hover:bg-red-500/10"
                                         >
-                                            <LogOut style={{ width: '16px', height: '16px' }} />
+                                            <LogOut className="w-4 h-4" />
                                             Sign Out
                                         </button>
                                     </div>
@@ -457,12 +363,8 @@ export function Header({ title, subtitle }: HeaderProps) {
             {/* Click outside to close notifications */}
             {showNotifications && (
                 <div
+                    className="fixed inset-0 z-[9998]"
                     onClick={() => setShowNotifications(false)}
-                    style={{
-                        position: 'fixed',
-                        inset: 0,
-                        zIndex: 9998
-                    }}
                 />
             )}
         </header>

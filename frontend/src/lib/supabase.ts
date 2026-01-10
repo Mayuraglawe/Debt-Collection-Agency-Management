@@ -56,7 +56,7 @@ export const api = {
 };
 
 // Authentication types
-export type UserRole = 'ADMIN' | 'MANAGER' | 'AGENT' | 'VIEWER';
+export type UserRole = 'ADMIN' | 'MANAGER' | 'AGENT' | 'VIEWER' | 'COMPLIANCE_OFFICER';
 
 export interface UserProfile {
     id: string;

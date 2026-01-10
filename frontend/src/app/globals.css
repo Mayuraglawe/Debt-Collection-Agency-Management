@@ -86,15 +86,15 @@ body {
 /* ===== Glass Morphism ===== */
 .glass {
   background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(51, 65, 85, 0.5);
 }
 
 .glass-strong {
   background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
   border: 1px solid rgba(51, 65, 85, 0.8);
 }
 
@@ -203,7 +203,7 @@ body {
 
 /* ===== Utility Classes ===== */
 .text-balance {
-  text-wrap: balance;
+  /* text-wrap: balance; Removed for browser compatibility */
 }
 
 /* ===== Focus States ===== */
@@ -216,6 +216,50 @@ body {
 ::selection {
   background: rgba(59, 130, 246, 0.3);
   color: #f1f5f9;
+}
+
+/* ===== Progress Bar Utility ===== */
+.progress-bar-dynamic {
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+.progress-bar-dynamic[data-progress="0"] { width: 0%; }
+.progress-bar-dynamic[data-progress="1"] { width: 1%; }
+.progress-bar-dynamic[data-progress="2"] { width: 2%; }
+.progress-bar-dynamic[data-progress="3"] { width: 3%; }
+.progress-bar-dynamic[data-progress="4"] { width: 4%; }
+.progress-bar-dynamic[data-progress="5"] { width: 5%; }
+.progress-bar-dynamic[data-progress="6"] { width: 6%; }
+.progress-bar-dynamic[data-progress="7"] { width: 7%; }
+.progress-bar-dynamic[data-progress="8"] { width: 8%; }
+.progress-bar-dynamic[data-progress="9"] { width: 9%; }
+.progress-bar-dynamic[data-progress="10"] { width: 10%; }
+.progress-bar-dynamic[data-progress="15"] { width: 15%; }
+.progress-bar-dynamic[data-progress="20"] { width: 20%; }
+.progress-bar-dynamic[data-progress="25"] { width: 25%; }
+.progress-bar-dynamic[data-progress="30"] { width: 30%; }
+.progress-bar-dynamic[data-progress="35"] { width: 35%; }
+.progress-bar-dynamic[data-progress="40"] { width: 40%; }
+.progress-bar-dynamic[data-progress="45"] { width: 45%; }
+.progress-bar-dynamic[data-progress="50"] { width: 50%; }
+.progress-bar-dynamic[data-progress="55"] { width: 55%; }
+.progress-bar-dynamic[data-progress="60"] { width: 60%; }
+.progress-bar-dynamic[data-progress="65"] { width: 65%; }
+.progress-bar-dynamic[data-progress="70"] { width: 70%; }
+.progress-bar-dynamic[data-progress="75"] { width: 75%; }
+.progress-bar-dynamic[data-progress="80"] { width: 80%; }
+.progress-bar-dynamic[data-progress="85"] { width: 85%; }
+.progress-bar-dynamic[data-progress="90"] { width: 90%; }
+.progress-bar-dynamic[data-progress="95"] { width: 95%; }
+.progress-bar-dynamic[data-progress="100"] { width: 100%; }
+
+/* ===== Grid Pattern Utility ===== */
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), 
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 50px 50px;
 }
 
 /* ===== Responsive Grid Helpers ===== */

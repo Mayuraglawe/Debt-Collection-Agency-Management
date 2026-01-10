@@ -80,7 +80,9 @@ export default function LandingPage() {
   const subtitleColor = theme === "light" ? "#475569" : "#94a3b8";
 
   return (
-    <div style={{ minHeight: '100vh', background: bgColor }}>
+    <div className={`min-h-screen ${
+      theme === "light" ? "bg-slate-50" : "bg-transparent"
+    }`}>
       {/* Theme Toggle Button - Fixed Position */}
       <motion.button
         initial={{ opacity: 0 }}
@@ -270,15 +272,13 @@ export default function LandingPage() {
                     transition: 'all 0.2s ease'
                   }}
                 >
-                  <p className="gradient-text" style={{
-                    fontSize: '32px',
-                    fontWeight: 700,
-                    marginBottom: '8px'
-                  }}>
+                  <p className="gradient-text text-3xl font-bold mb-2">
                     {stat.value}
-                    <span style={{ color: '#4ade80' }}>{stat.suffix}</span>
+                    <span className="text-green-400">{stat.suffix}</span>
                   </p>
-                  <p style={{ fontSize: '13px', color: mutedColor }}>{stat.label}</p>
+                  <p className={`text-sm ${
+                    theme === 'light' ? 'text-slate-600' : 'text-slate-400'
+                  }`}>{stat.label}</p>
                 </motion.div>
               ))}
             </motion.div>
@@ -321,18 +321,22 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section style={{ padding: '100px 24px' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <section className="py-25 px-6">
+        <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            style={{ textAlign: 'center', marginBottom: '64px' }}
+            className="text-center mb-16"
           >
-            <h2 style={{ fontSize: '36px', fontWeight: 700, marginBottom: '16px', color: textColor }}>
+            <h2 className={`text-4xl font-bold mb-4 ${
+              theme === 'light' ? 'text-slate-800' : 'text-slate-100'
+            }`}>
               Powerful <span className="gradient-text">Features</span>
             </h2>
-            <p style={{ color: mutedColor, maxWidth: '600px', margin: '0 auto' }}>
+            <p className={`max-w-2xl mx-auto ${
+              theme === 'light' ? 'text-slate-600' : 'text-slate-400'
+            }`}>
               Built with cutting-edge technology to transform debt collection operations
             </p>
           </motion.div>
@@ -399,8 +403,8 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section style={{ padding: '80px 24px' }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+      <section className="py-20 px-6">
+        <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -440,12 +444,13 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer style={{
-        padding: '24px',
-        borderTop: `1px solid ${borderColor}`,
-        textAlign: 'center'
-      }}>
-        <p style={{ fontSize: '14px', color: mutedColor }}>
+      <footer 
+        className="p-6 text-center border-t"
+        style={{ borderTopColor: borderColor }}
+      >
+        <p className={`text-sm ${
+          theme === 'light' ? 'text-slate-600' : 'text-slate-400'
+        }`}>
           © 2025 Atlas DCA. Built for FedEx SMART Hackathon.
         </p>
       </footer>

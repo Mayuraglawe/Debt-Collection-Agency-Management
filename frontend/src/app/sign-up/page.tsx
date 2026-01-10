@@ -85,7 +85,7 @@ export default function SignUpPage() {
 
     if (success) {
         return (
-            <div className="min-h-screen flex items-center justify-center p-4" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)' }}>
+            <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -97,7 +97,7 @@ export default function SignUpPage() {
                         transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
                         className="mb-6 flex justify-center"
                     >
-                        <div className="w-24 h-24 rounded-full flex items-center justify-center" style={{ background: 'rgba(34, 197, 94, 0.2)' }}>
+                        <div className="w-24 h-24 rounded-full flex items-center justify-center bg-green-500/20">
                             <CheckCircle className="w-12 h-12 text-green-400" />
                         </div>
                     </motion.div>
@@ -113,11 +113,34 @@ export default function SignUpPage() {
     }
 
     return (
-        <div className="min-h-screen flex" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)' }}>
-            {/* Left Panel - Form */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 order-2 lg:order-1">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900">
+            {/* Navigation Header */}
+            <nav className="absolute top-0 left-0 right-0 z-10 p-6">
+                <div className="flex justify-between items-center">
+                    <Link href="/" className="flex items-center gap-3 group transition-all duration-300 hover:scale-105">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-blue-500/25">
+                            <Shield className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-2xl font-bold text-white tracking-tight">Atlas DCA</span>
+                    </Link>
+                    
+                    <div className="flex items-center gap-4">
+                        <Link href="/" className="text-slate-300 hover:text-white transition-colors font-medium">
+                            Home
+                        </Link>
+                        <Link href="/sign-in" className="px-6 py-2 bg-blue-600/20 text-blue-400 rounded-lg border border-blue-500/30 hover:bg-blue-600/30 transition-all duration-300">
+                            Sign In
+                        </Link>
+                    </div>
+                </div>
+            </nav>
+
+            {/* Main Content */}
+            <div className="flex flex-1">
+                {/* Left Panel - Form */}
+                <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 order-2 lg:order-1">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5 }}
                     className="w-full max-w-md"
@@ -132,13 +155,7 @@ export default function SignUpPage() {
 
                     {/* Card */}
                     <div
-                        className="rounded-3xl p-8 sm:p-10"
-                        style={{
-                            background: 'rgba(30, 41, 59, 0.5)',
-                            backdropFilter: 'blur(20px)',
-                            border: '1px solid rgba(148, 163, 184, 0.1)',
-                            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
-                        }}
+                        className="rounded-3xl p-8 sm:p-10 bg-slate-800/50 backdrop-blur-xl border border-slate-600/10 shadow-2xl"
                     >
                         {/* Header */}
                         <div className="text-center mb-8">
@@ -153,8 +170,7 @@ export default function SignUpPage() {
                             <motion.div
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="mb-6 p-4 rounded-xl flex items-start gap-3"
-                                style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)' }}
+                                className="mb-6 p-4 rounded-xl flex items-start gap-3 bg-red-500/10 border border-red-500/20"
                             >
                                 <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
                                 <p className="text-sm text-red-300">{error}</p>
@@ -178,12 +194,7 @@ export default function SignUpPage() {
                                         value={fullName}
                                         onChange={(e) => setFullName(e.target.value)}
                                         required
-                                        className="w-full pr-4 py-4 rounded-xl text-white placeholder-slate-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                                        style={{
-                                            paddingLeft: '56px',
-                                            background: 'rgba(15, 23, 42, 0.6)',
-                                            border: '1px solid rgba(148, 163, 184, 0.2)'
-                                        }}
+                                        className="w-full pl-14 pr-4 py-4 rounded-xl text-white placeholder-slate-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-slate-900/60 border border-slate-600/20"
                                         placeholder="John Doe"
                                     />
                                 </div>
@@ -204,12 +215,7 @@ export default function SignUpPage() {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         required
-                                        className="w-full pr-4 py-4 rounded-xl text-white placeholder-slate-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                                        style={{
-                                            paddingLeft: '56px',
-                                            background: 'rgba(15, 23, 42, 0.6)',
-                                            border: '1px solid rgba(148, 163, 184, 0.2)'
-                                        }}
+                                        className="w-full pl-14 pr-4 py-4 rounded-xl text-white placeholder-slate-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-slate-900/60 border border-slate-600/20"
                                         placeholder="you@example.com"
                                     />
                                 </div>
@@ -230,12 +236,7 @@ export default function SignUpPage() {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
-                                        className="w-full pr-4 py-4 rounded-xl text-white placeholder-slate-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                                        style={{
-                                            paddingLeft: '56px',
-                                            background: 'rgba(15, 23, 42, 0.6)',
-                                            border: '1px solid rgba(148, 163, 184, 0.2)'
-                                        }}
+                                        className="w-full pl-14 pr-4 py-4 rounded-xl text-white placeholder-slate-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-slate-900/60 border border-slate-600/20"
                                         placeholder="••••••••"
                                     />
                                 </div>
@@ -246,14 +247,19 @@ export default function SignUpPage() {
                                             {[1, 2, 3, 4, 5].map((i) => (
                                                 <div
                                                     key={i}
-                                                    className="h-1.5 flex-1 rounded-full transition-all duration-300"
-                                                    style={{
-                                                        background: i <= passwordStrength ? strengthColors[passwordStrength - 1] : 'rgba(148, 163, 184, 0.2)'
-                                                    }}
+                                                    className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
+                                                        i <= passwordStrength 
+                                                            ? passwordStrength === 1 ? 'bg-red-400' 
+                                                            : passwordStrength === 2 ? 'bg-orange-400'
+                                                            : passwordStrength === 3 ? 'bg-yellow-400'
+                                                            : passwordStrength === 4 ? 'bg-green-400'
+                                                            : 'bg-emerald-400'
+                                                            : 'bg-slate-600/20'
+                                                    }`}
                                                 />
                                             ))}
                                         </div>
-                                        <p className="text-xs" style={{ color: strengthColors[passwordStrength - 1] || '#94a3b8' }}>
+                                        <p className={`text-xs ${passwordStrength === 1 ? 'text-red-400' : passwordStrength === 2 ? 'text-orange-400' : passwordStrength === 3 ? 'text-yellow-400' : passwordStrength === 4 ? 'text-green-400' : passwordStrength === 5 ? 'text-emerald-400' : 'text-slate-400'}`}>
                                             {passwordStrength > 0 ? strengthLabels[passwordStrength - 1] : 'Enter a password'}
                                         </p>
                                     </div>
@@ -275,12 +281,7 @@ export default function SignUpPage() {
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
                                         required
-                                        className="w-full pr-4 py-4 rounded-xl text-white placeholder-slate-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                                        style={{
-                                            paddingLeft: '56px',
-                                            background: 'rgba(15, 23, 42, 0.6)',
-                                            border: '1px solid rgba(148, 163, 184, 0.2)'
-                                        }}
+                                        className="w-full pl-14 pr-4 py-4 rounded-xl text-white placeholder-slate-500 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-slate-900/60 border border-slate-600/20"
                                         placeholder="••••••••"
                                     />
                                     {confirmPassword && password === confirmPassword && (
@@ -293,11 +294,7 @@ export default function SignUpPage() {
                             <Button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full py-4 text-base font-semibold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-6"
-                                style={{
-                                    background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
-                                    boxShadow: '0 10px 30px -10px rgba(59, 130, 246, 0.5)'
-                                }}
+                                className="w-full py-4 text-base font-semibold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-6 bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg shadow-blue-500/25"
                             >
                                 {loading ? (
                                     <div className="flex items-center justify-center gap-3">
@@ -346,18 +343,12 @@ export default function SignUpPage() {
                 {/* Animated Background */}
                 <div className="absolute inset-0">
                     <div className="absolute top-20 right-20 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl animate-pulse" />
-                    <div className="absolute bottom-20 left-20 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+                    <div className="absolute bottom-20 left-20 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse [animation-delay:1s]" />
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl" />
                 </div>
 
                 {/* Grid Pattern */}
-                <div
-                    className="absolute inset-0 opacity-10"
-                    style={{
-                        backgroundImage: 'linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px)',
-                        backgroundSize: '50px 50px'
-                    }}
-                />
+                <div className="absolute inset-0 opacity-10 bg-grid-pattern" />
 
                 {/* Content */}
                 <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
@@ -443,6 +434,7 @@ export default function SignUpPage() {
                         </div>
                     </motion.div>
                 </div>
+            </div>
             </div>
         </div>
     );

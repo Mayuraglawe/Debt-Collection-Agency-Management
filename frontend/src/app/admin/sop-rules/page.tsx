@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { AuthGuard } from '@/components/auth-guard';
+import { AdminLayout } from '@/components/layout/admin-layout';
 import { supabase } from '@/lib/supabase';
 import { FileText, Plus, Edit2, Trash2, Save, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -82,8 +82,11 @@ export default function SOPRulesPage() {
     };
 
     return (
-        <AuthGuard allowedRoles={['ADMIN']}>
-            <div className="min-h-screen p-8" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)' }}>
+        <AdminLayout 
+            title="SOP & Rules Management"
+            description="Standard Operating Procedures and compliance rules"
+        >
+            <div className="min-h-screen p-8 bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900">
                 {/* Header */}
                 <div className="mb-8">
                     <div className="flex items-center justify-between">
@@ -122,14 +125,12 @@ export default function SOPRulesPage() {
                         <button
                             key={cat}
                             onClick={() => setSelectedCategory(cat)}
-                            className="px-4 py-2 rounded-lg text-sm font-medium transition-all"
-                            style={{
-                                background: selectedCategory === cat
-                                    ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(20, 184, 166, 0.2))'
-                                    : 'rgba(30, 41, 59, 0.5)',
-                                border: selectedCategory === cat ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(148, 163, 184, 0.2)',
-                                color: selectedCategory === cat ? '#6ee7b7' : '#94a3b8'
-                            }}
+                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                                selectedCategory === cat
+                                    ? 'bg-gradient-to-br from-green-500/20 to-teal-500/20 border border-green-500/30 text-green-300'
+                                    : 'bg-slate-700/50 border border-slate-600/20 text-slate-400 hover:text-slate-300'
+                            }`}
+                            title={`Filter by ${cat} category`}
                         >
                             {cat}
                         </button>
@@ -149,12 +150,7 @@ export default function SOPRulesPage() {
                         {filteredRules.map(rule => (
                             <div
                                 key={rule.id}
-                                className="p-6 rounded-xl"
-                                style={{
-                                    background: 'rgba(30, 41, 59, 0.5)',
-                                    backdropFilter: 'blur(12px)',
-                                    border: '1px solid rgba(148, 163, 184, 0.2)'
-                                }}
+                                className="p-6 rounded-xl bg-slate-700/50 backdrop-blur-xl border border-slate-600/20 hover:border-slate-500/30 transition-all"
                             >
                                 {/* Header */}
                                 <div className="flex items-start justify-between mb-4">
@@ -167,7 +163,7 @@ export default function SOPRulesPage() {
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="px-2.5 py-1 rounded-full inline-block" style={{ background: '#10b98120', border: '1px solid #10b98130' }}>
+                                        <div className="px-2.5 py-1 rounded-full inline-block bg-green-500/20 border border-green-500/30">
                                             <span className="text-xs text-emerald-300 font-medium">{rule.category}</span>
                                         </div>
                                     </div>
@@ -229,22 +225,23 @@ export default function SOPRulesPage() {
                     </div>
                 </div>
             </div>
-        </AuthGuard>
+        </AdminLayout>
     );
 }
 
 function StatsCard({ label, value, color }: { label: string; value: string; color: string }) {
+    const colorMap: Record<string, string> = {
+        '#22c55e': 'text-green-500',
+        '#ef4444': 'text-red-500',
+        '#f59e0b': 'text-amber-500',
+        '#3b82f6': 'text-blue-500'
+    };
+    const colorClass = colorMap[color] || 'text-blue-500';
+    
     return (
-        <div
-            className="p-4 rounded-xl"
-            style={{
-                background: 'rgba(30, 41, 59, 0.5)',
-                backdropFilter: 'blur(12px)',
-                border: '1px solid rgba(148, 163, 184, 0.2)'
-            }}
-        >
+        <div className="p-4 rounded-xl bg-slate-700/50 backdrop-blur-xl border border-slate-600/20">
             <p className="text-sm text-slate-400 mb-1">{label}</p>
-            <p className="text-2xl font-bold" style={{ color }}>{value}</p>
+            <p className={`text-2xl font-bold ${colorClass}`}>{value}</p>
         </div>
     );
 }
@@ -253,16 +250,15 @@ function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: () =>
     return (
         <button
             onClick={onChange}
-            className="relative w-10 h-5 rounded-full transition-all"
-            style={{
-                background: checked ? '#22c55e' : '#475569'
-            }}
+            className={`relative w-10 h-5 rounded-full transition-all ${
+                checked ? 'bg-green-500' : 'bg-slate-600'
+            }`}
+            title={checked ? 'Toggle off' : 'Toggle on'}
         >
             <div
-                className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform"
-                style={{
-                    transform: checked ? 'translateX(20px)' : 'translateX(0)'
-                }}
+                className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${
+                    checked ? 'translate-x-5' : 'translate-x-0'
+                }`}
             />
         </button>
     );
@@ -271,12 +267,7 @@ function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: () =>
 function TemplateCard({ title, description, category }: { title: string; description: string; category: string }) {
     return (
         <div
-            className="p-5 rounded-xl cursor-pointer transition-all hover:scale-105"
-            style={{
-                background: 'rgba(30, 41, 59, 0.5)',
-                backdropFilter: 'blur(12px)',
-                border: '1px solid rgba(148, 163, 184, 0.2)'
-            }}
+            className="p-5 rounded-xl cursor-pointer transition-all hover:scale-105 bg-slate-700/50 backdrop-blur-xl border border-slate-600/20"
         >
             <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold text-white">{title}</h3>

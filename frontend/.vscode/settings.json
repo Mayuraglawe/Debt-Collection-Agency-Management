@@ -1,0 +1,21 @@
+{
+  "css.lint.validProperties": [
+    "color",
+    "background",
+    "backgroundColor",
+    "borderColor"
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  // Disable inline style warnings in VS Code
+  "html.validate.styles": false,
+  "css.validate": false
+}

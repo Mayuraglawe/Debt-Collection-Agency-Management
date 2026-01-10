@@ -146,14 +146,12 @@ export function Sidebar() {
                 }}
             >
                 {/* Logo */}
-                <div style={{
-                    height: '64px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: collapsed ? 'center' : 'flex-start',
-                    padding: collapsed ? '0' : '0 20px',
-                    borderBottom: `1px solid ${borderColor}`
-                }}>
+                <div 
+                    className={`h-16 flex items-center border-b ${
+                        collapsed ? 'justify-center px-0' : 'justify-start px-5'
+                    }`}
+                    style={{ borderBottomColor: borderColor }}
+                >
                     <div style={{
                         width: '40px',
                         height: '40px',
@@ -164,7 +162,7 @@ export function Sidebar() {
                         justifyContent: 'center',
                         flexShrink: 0
                     }}>
-                        <span style={{ color: 'white', fontWeight: 700, fontSize: '18px' }}>A</span>
+                        <span className="text-white font-bold text-lg">A</span>
                     </div>
                     <AnimatePresence mode="wait">
                         {!collapsed && (
@@ -174,17 +172,19 @@ export function Sidebar() {
                                 exit={{ opacity: 0, x: -10 }}
                                 style={{ marginLeft: '12px' }}
                             >
-                                <h1 className="gradient-text" style={{ fontWeight: 700, fontSize: '18px', lineHeight: 1.2 }}>
+                                <h1 className="gradient-text font-bold text-lg leading-tight">
                                     Atlas DCA
                                 </h1>
-                                <p style={{ fontSize: '11px', color: mutedColor }}>Debt Collection</p>
+                                <p className={`text-xs ${
+                                    theme === 'light' ? 'text-slate-600' : 'text-slate-400'
+                                }`}>Debt Collection</p>
                             </motion.div>
                         )}
                     </AnimatePresence>
                 </div>
 
                 {/* Navigation */}
-                <nav style={{ flex: 1, padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
                     {getNavItems(user?.role).map((item) => {
                         const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
                         return (

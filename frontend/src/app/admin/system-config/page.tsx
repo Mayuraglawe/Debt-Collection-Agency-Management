@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { AuthGuard } from '@/components/auth-guard';
+import { AdminLayout } from '@/components/layout/admin-layout';
 import { useAuth } from '@/lib/auth-context';
 import { supabase } from '@/lib/supabase';
 import { Settings, Database, Mail, Bell, Lock, Save, Shield, Globe } from 'lucide-react';
@@ -79,8 +79,11 @@ export default function SystemConfigPage() {
     };
 
     return (
-        <AuthGuard allowedRoles={['ADMIN']}>
-            <div className="min-h-screen p-8" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)' }}>
+        <AdminLayout 
+            title="System Configuration"
+            description="Manage system settings and preferences"
+        >
+            <div className="min-h-screen p-8 bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900">
                 {/* Header */}
                 <div className="mb-8">
                     <div className="flex items-center justify-between">
@@ -137,11 +140,9 @@ export default function SystemConfigPage() {
                                 <select
                                     value={config.dbBackupFrequency}
                                     onChange={(e) => setConfig({ ...config, dbBackupFrequency: e.target.value })}
-                                    className="w-full px-4 py-3 rounded-xl text-white transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-                                    style={{
-                                        background: 'rgba(15, 23, 42, 0.6)',
-                                        border: '1px solid rgba(148, 163, 184, 0.2)'
-                                    }}
+                                    className="w-full px-4 py-3 rounded-xl text-white transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/50 bg-slate-900/60 border border-slate-600/20"
+                                    title="Select backup frequency"
+                                    aria-label="Select backup frequency"
                                 >
                                     <option value="hourly">Hourly</option>
                                     <option value="daily">Daily</option>
@@ -164,11 +165,9 @@ export default function SystemConfigPage() {
                                     type="text"
                                     value={config.smtpHost}
                                     onChange={(e) => setConfig({ ...config, smtpHost: e.target.value })}
-                                    className="w-full px-4 py-3 rounded-xl text-white transition-all focus:outline-none focus:ring-2 focus:ring-green-500/50"
-                                    style={{
-                                        background: 'rgba(15, 23, 42, 0.6)',
-                                        border: '1px solid rgba(148, 163, 184, 0.2)'
-                                    }}
+                                    className="w-full px-4 py-3 rounded-xl text-white transition-all focus:outline-none focus:ring-2 focus:ring-green-500/50 bg-slate-900/60 border border-slate-600/20"
+                                    placeholder="smtp.gmail.com"
+                                    title="Enter SMTP host address"
                                 />
                             </div>
                             <div>
@@ -177,11 +176,9 @@ export default function SystemConfigPage() {
                                     type="text"
                                     value={config.smtpPort}
                                     onChange={(e) => setConfig({ ...config, smtpPort: e.target.value })}
-                                    className="w-full px-4 py-3 rounded-xl text-white transition-all focus:outline-none focus:ring-2 focus:ring-green-500/50"
-                                    style={{
-                                        background: 'rgba(15, 23, 42, 0.6)',
-                                        border: '1px solid rgba(148, 163, 184, 0.2)'
-                                    }}
+                                    className="w-full px-4 py-3 rounded-xl text-white transition-all focus:outline-none focus:ring-2 focus:ring-green-500/50 bg-slate-900/60 border border-slate-600/20"
+                                    placeholder="587"
+                                    title="Enter SMTP port number"
                                 />
                             </div>
                         </div>
@@ -231,11 +228,9 @@ export default function SystemConfigPage() {
                                     type="number"
                                     value={config.sessionTimeout}
                                     onChange={(e) => setConfig({ ...config, sessionTimeout: e.target.value })}
-                                    className="w-full px-4 py-3 rounded-xl text-white transition-all focus:outline-none focus:ring-2 focus:ring-red-500/50"
-                                    style={{
-                                        background: 'rgba(15, 23, 42, 0.6)',
-                                        border: '1px solid rgba(148, 163, 184, 0.2)'
-                                    }}
+                                    className="w-full px-4 py-3 rounded-xl text-white transition-all focus:outline-none focus:ring-2 focus:ring-red-500/50 bg-slate-900/60 border border-slate-600/20"
+                                    placeholder="30"
+                                    title="Enter session timeout in minutes"
                                 />
                             </div>
                             <div className="flex items-center justify-between">
@@ -251,11 +246,9 @@ export default function SystemConfigPage() {
                                     type="number"
                                     value={config.passwordExpiry}
                                     onChange={(e) => setConfig({ ...config, passwordExpiry: e.target.value })}
-                                    className="w-full px-4 py-3 rounded-xl text-white transition-all focus:outline-none focus:ring-2 focus:ring-red-500/50"
-                                    style={{
-                                        background: 'rgba(15, 23, 42, 0.6)',
-                                        border: '1px solid rgba(148, 163, 184, 0.2)'
-                                    }}
+                                    className="w-full px-4 py-3 rounded-xl text-white transition-all focus:outline-none focus:ring-2 focus:ring-red-500/50 bg-slate-900/60 border border-slate-600/20"
+                                    placeholder="90"
+                                    title="Enter password expiry in days"
                                 />
                             </div>
                         </div>
@@ -274,11 +267,9 @@ export default function SystemConfigPage() {
                                     type="text"
                                     value={config.appName}
                                     onChange={(e) => setConfig({ ...config, appName: e.target.value })}
-                                    className="w-full px-4 py-3 rounded-xl text-white transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-                                    style={{
-                                        background: 'rgba(15, 23, 42, 0.6)',
-                                        border: '1px solid rgba(148, 163, 184, 0.2)'
-                                    }}
+                                    className="w-full px-4 py-3 rounded-xl text-white transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 bg-slate-900/60 border border-slate-600/20"
+                                    placeholder="Debt Collection Manager"
+                                    title="Enter application name"
                                 />
                             </div>
                             <div>
@@ -286,11 +277,9 @@ export default function SystemConfigPage() {
                                 <select
                                     value={config.timezone}
                                     onChange={(e) => setConfig({ ...config, timezone: e.target.value })}
-                                    className="w-full px-4 py-3 rounded-xl text-white transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-                                    style={{
-                                        background: 'rgba(15, 23, 42, 0.6)',
-                                        border: '1px solid rgba(148, 163, 184, 0.2)'
-                                    }}
+                                    className="w-full px-4 py-3 rounded-xl text-white transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 bg-slate-900/60 border border-slate-600/20"
+                                    title="Select timezone"
+                                    aria-label="Select timezone"
                                 >
                                     <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
                                     <option value="America/New_York">America/New York (EST)</option>
@@ -301,26 +290,18 @@ export default function SystemConfigPage() {
                     </ConfigSection>
                 </div>
             </div>
-        </AuthGuard>
+        </AdminLayout>
     );
 }
 
 function ConfigSection({ icon: Icon, title, color, children }: any) {
     return (
         <div
-            className="p-6 rounded-xl"
-            style={{
-                background: 'rgba(30, 41, 59, 0.5)',
-                backdropFilter: 'blur(12px)',
-                border: '1px solid rgba(148, 163, 184, 0.2)'
-            }}
+            className="p-6 rounded-xl bg-slate-700/50 backdrop-blur-xl border border-slate-600/20"
         >
             <div className="flex items-center gap-3 mb-6">
-                <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center"
-                    style={{ background: `${color}20` }}
-                >
-                    <Icon className="w-5 h-5" style={{ color }} />
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-500/10">
+                    <Icon className="w-5 h-5 text-blue-500" />
                 </div>
                 <h2 className="text-lg font-semibold text-white">{title}</h2>
             </div>
@@ -333,16 +314,15 @@ function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (chec
     return (
         <button
             onClick={() => onChange(!checked)}
-            className="relative w-12 h-6 rounded-full transition-all"
-            style={{
-                background: checked ? '#22c55e' : '#475569'
-            }}
+            className={`relative w-12 h-6 rounded-full transition-all ${
+                checked ? 'bg-green-500' : 'bg-slate-600'
+            }`}
+            title={checked ? 'Toggle off' : 'Toggle on'}
         >
             <div
-                className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform"
-                style={{
-                    transform: checked ? 'translateX(24px)' : 'translateX(0)'
-                }}
+                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                    checked ? 'translate-x-6' : 'translate-x-0'
+                }`}
             />
         </button>
     );

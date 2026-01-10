@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { supabase, WorkflowCase } from '@/lib/supabase';
-import { AuthGuard } from '@/components/auth-guard';
+import { AdminLayout } from '@/components/layout/admin-layout';
 import { GitBranch, Play, Settings, TrendingUp, Users, Zap, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -210,30 +210,26 @@ export default function CaseAllocationPage() {
     };
 
     return (
-        <AuthGuard allowedRoles={['ADMIN', 'MANAGER']}>
-            <div className="min-h-screen p-8" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)' }}>
+        <AdminLayout 
+            title="Case Allocation Engine"
+            description="AI-powered automated case distribution"
+        >
+            <div className="space-y-8">
                 {/* Header */}
-                <div className="mb-8">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-                                <GitBranch className="w-6 h-6 text-white" />
-                            </div>
-                            <div>
-                                <h1 className="text-3xl font-bold text-white">Case Allocation Engine</h1>
-                                <p className="text-slate-400">AI-powered automated case distribution</p>
-                            </div>
-                        </div>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h1 className="text-3xl font-bold text-white mb-2">AI-Powered Case Allocation</h1>
+                        <p className="text-slate-400">Automatically distribute cases based on intelligent rules</p>
+                    </div>
+                    <div className="flex gap-4">
                         <Button
                             onClick={runAllocation}
                             disabled={allocating || pendingCases.length === 0}
-                            className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold"
-                            style={{
-                                background: allocating || pendingCases.length === 0
-                                    ? 'rgba(139, 92, 246, 0.3)'
-                                    : 'linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%)',
-                                boxShadow: '0 10px 30px -10px rgba(139, 92, 246, 0.5)'
-                            }}
+                            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 ${
+                                allocating || pendingCases.length === 0
+                                    ? 'bg-purple-500/30 cursor-not-allowed'
+                                    : 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700'
+                            }`}
                         >
                             {allocating ? (
                                 <>
@@ -264,19 +260,18 @@ export default function CaseAllocationPage() {
                         {allocationRules.map(rule => (
                             <div
                                 key={rule.id}
-                                className="p-5 rounded-xl"
-                                style={{
-                                    background: 'rgba(30, 41, 59, 0.5)',
-                                    backdropFilter: 'blur(12px)',
-                                    border: rule.isActive ? '1px solid rgba(139, 92, 246, 0.3)' : '1px solid rgba(148, 163, 184, 0.2)'
-                                }}
+                                className={`p-5 rounded-xl backdrop-blur-xl ${
+                                    rule.isActive 
+                                        ? 'bg-slate-800/50 border border-purple-500/30' 
+                                        : 'bg-slate-800/30 border border-slate-600/20'
+                                }`}
                             >
                                 <div className="flex items-center justify-between mb-3">
                                     <h3 className="font-semibold text-white">{rule.name}</h3>
                                     <div className={`w-2 h-2 rounded-full ${rule.isActive ? 'bg-green-400' : 'bg-slate-600'}`} />
                                 </div>
                                 <p className="text-sm text-slate-400 mb-2">Criteria: {rule.criteria}</p>
-                                <div className="px-2.5 py-1 rounded-full inline-block" style={{ background: '#8b5cf620', border: '1px solid #8b5cf630' }}>
+                                <div className="px-2.5 py-1 rounded-full inline-block bg-purple-500/20 border border-purple-500/30">
                                     <span className="text-xs text-purple-300 font-medium">{rule.agency}</span>
                                 </div>
                             </div>
@@ -291,12 +286,7 @@ export default function CaseAllocationPage() {
                     </h2>
                     {pendingCases.length === 0 ? (
                         <div
-                            className="p-12 rounded-xl text-center"
-                            style={{
-                                background: 'rgba(30, 41, 59, 0.5)',
-                                backdropFilter: 'blur(12px)',
-                                border: '1px solid rgba(148, 163, 184, 0.2)'
-                            }}
+                            className="p-12 rounded-xl text-center bg-slate-800/50 backdrop-blur-xl border border-slate-600/20"
                         >
                             <Zap className="w-16 h-16 text-slate-600 mx-auto mb-4" />
                             <h3 className="text-xl font-semibold text-white mb-2">No Pending Cases</h3>
@@ -304,16 +294,11 @@ export default function CaseAllocationPage() {
                         </div>
                     ) : (
                         <div
-                            className="rounded-xl overflow-hidden"
-                            style={{
-                                background: 'rgba(30, 41, 59, 0.5)',
-                                backdropFilter: 'blur(12px)',
-                                border: '1px solid rgba(148, 163, 184, 0.2)'
-                            }}
+                            className="rounded-xl overflow-hidden bg-slate-800/50 backdrop-blur-xl border border-slate-600/20"
                         >
                             <table className="w-full text-sm">
                                 <thead>
-                                    <tr style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                                    <tr className="border-b border-slate-600/20">
                                         <th className="text-left p-4 text-slate-400">Case Number</th>
                                         <th className="text-left p-4 text-slate-400">Amount</th>
                                         <th className="text-left p-4 text-slate-400">Priority</th>
@@ -322,7 +307,7 @@ export default function CaseAllocationPage() {
                                 </thead>
                                 <tbody>
                                     {pendingCases.slice(0, 5).map(c => (
-                                        <tr key={c.id} style={{ borderBottom: '1px solid rgba(148, 163, 184, 0.1)' }}>
+                                        <tr key={c.id} className="border-b border-slate-600/10">
                                             <td className="p-4 text-white">{c.case_number}</td>
                                             <td className="p-4 text-white">₹{c.amount.toLocaleString()}</td>
                                             <td className="p-4">
@@ -347,30 +332,20 @@ export default function CaseAllocationPage() {
                     )}
                 </div>
             </div>
-        </AuthGuard>
+        </AdminLayout>
     );
 }
 
 function StatsCard({ icon: Icon, label, value, color }: { icon: any; label: string; value: string; color: string }) {
     return (
-        <div
-            className="p-4 rounded-xl"
-            style={{
-                background: 'rgba(30, 41, 59, 0.5)',
-                backdropFilter: 'blur(12px)',
-                border: '1px solid rgba(148, 163, 184, 0.2)'
-            }}
-        >
+        <div className="p-4 rounded-xl bg-slate-800/50 backdrop-blur-xl border border-slate-600/20">
             <div className="flex items-center justify-between">
                 <div>
                     <p className="text-sm text-slate-400 mb-1">{label}</p>
                     <p className="text-2xl font-bold text-white">{value}</p>
                 </div>
-                <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center"
-                    style={{ background: `${color}20` }}
-                >
-                    <Icon className="w-6 h-6" style={{ color }} />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center opacity-80 bg-blue-500/20">
+                    <Icon className="w-6 h-6 text-blue-500" />
                 </div>
             </div>
         </div>

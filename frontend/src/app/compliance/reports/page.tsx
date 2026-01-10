@@ -196,7 +196,7 @@ export default function ComplianceReportsPage() {
 
     return (
         <AuthGuard allowedRoles={['ADMIN', 'COMPLIANCE_OFFICER']}>
-            <div className="min-h-screen p-8" style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%)' }}>
+            <div className="min-h-screen p-8 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
                 {/* Header */}
                 <div className="mb-8">
                     <div className="flex items-center gap-3">
@@ -211,7 +211,7 @@ export default function ComplianceReportsPage() {
                 </div>
 
                 {/* Report Generator */}
-                <div className="mb-8 p-6 rounded-xl" style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                <div className="mb-8 p-6 rounded-xl bg-slate-800/50 border border-slate-400/20">
                     <h2 className="text-xl font-bold text-white mb-6">Generate New Report</h2>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
@@ -219,8 +219,8 @@ export default function ComplianceReportsPage() {
                             <select
                                 value={reportType}
                                 onChange={(e) => setReportType(e.target.value as ReportType)}
-                                className="w-full px-4 py-3 rounded-xl text-white"
-                                style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(148, 163, 184, 0.2)' }}
+                                title="Select report type"
+                                className="w-full px-4 py-3 rounded-xl text-white bg-slate-900/60 border border-slate-400/20"
                             >
                                 <option value="DAILY">Daily Report</option>
                                 <option value="WEEKLY">Weekly Report</option>
@@ -235,8 +235,9 @@ export default function ComplianceReportsPage() {
                                 type="date"
                                 value={dateFrom}
                                 onChange={(e) => setDateFrom(e.target.value)}
-                                className="w-full px-4 py-3 rounded-xl text-white"
-                                style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(148, 163, 184, 0.2)' }}
+                                title="Select start date"
+                                placeholder="From date"
+                                className="w-full px-4 py-3 rounded-xl text-white bg-slate-900/60 border border-slate-400/20"
                             />
                         </div>
                         <div>
@@ -245,8 +246,9 @@ export default function ComplianceReportsPage() {
                                 type="date"
                                 value={dateTo}
                                 onChange={(e) => setDateTo(e.target.value)}
-                                className="w-full px-4 py-3 rounded-xl text-white"
-                                style={{ background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(148, 163, 184, 0.2)' }}
+                                title="Select end date"
+                                placeholder="To date"
+                                className="w-full px-4 py-3 rounded-xl text-white bg-slate-900/60 border border-slate-400/20"
                             />
                         </div>
                         <div className="flex items-end">
@@ -281,12 +283,12 @@ export default function ComplianceReportsPage() {
                 <div>
                     <h2 className="text-xl font-bold text-white mb-4">Generated Reports</h2>
                     {loading ? (
-                        <div className="p-20 text-center rounded-xl" style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                        <div className="p-20 text-center rounded-xl bg-slate-800/50 border border-slate-400/20">
                             <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
                             <p className="text-slate-400">Loading reports...</p>
                         </div>
                     ) : reports.length === 0 ? (
-                        <div className="p-20 text-center rounded-xl" style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
+                        <div className="p-20 text-center rounded-xl bg-slate-800/50 border border-slate-400/20">
                             <FileText className="w-16 h-16 text-slate-600 mx-auto mb-4" />
                             <h3 className="text-xl font-semibold text-white mb-2">No Reports Generated</h3>
                             <p className="text-slate-400">Generate your first compliance report to get started</p>
@@ -296,8 +298,7 @@ export default function ComplianceReportsPage() {
                             {reports.map(report => (
                                 <div
                                     key={report.id}
-                                    className="p-5 rounded-xl"
-                                    style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid rgba(148, 163, 184, 0.2)' }}
+                                    className="p-5 rounded-xl bg-slate-800/50 border border-slate-400/20"
                                 >
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">
